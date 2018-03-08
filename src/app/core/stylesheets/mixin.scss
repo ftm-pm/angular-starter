@@ -1,0 +1,25 @@
+@import "~@angular/material/theming";
+
+@mixin theme() {
+  @include mat-core();
+  $app-primary: mat-palette($mat-indigo);
+  $app-accent:  mat-palette($mat-pink, A200, A100, A400);
+  $app-theme: mat-light-theme($app-primary, $app-accent);
+  @include angular-material-theme($app-theme);
+}
+
+@mixin page() {
+  :host {
+    width: 100%;
+    display: flex;
+    flex: 1 0;
+  }
+}
+
+@mixin main() {
+  :host {
+    display: flex;
+    flex-flow: column nowrap;
+    min-height: 100vh;
+  }
+}

@@ -1,0 +1,66 @@
+//@import "~@angular/material/prebuilt-themes/indigo-pink.css";
+
+@import "~@angular/material/theming";
+@import "mixin";
+@import "fonts";
+
+@include theme();
+
+html, body {
+  font-family: Roboto, 'Helvetica Neue', sans-serif;
+  font-size: 16px;
+}
+
+.layout {
+  flex: 1 0;
+  display: flex;
+  flex-flow: column wrap;
+  width: 100%;
+
+  &_column {
+    flex-flow: column wrap;
+  }
+  &_row {
+    flex-flow: row wrap;
+  }
+}
+
+.layout-tab-group {
+  width: 100%;
+}
+
+.layout-column {
+  flex: 1 0;
+  display: flex;
+
+  &_w2 {
+    flex: 2 0;
+  }
+}
+
+.layout-footer {
+  display: block;
+}
+
+//////////////////////////
+
+main {
+  background-color: mat-color($mat-grey, 100);
+  flex: 1 0;
+  display: flex;
+  flex-flow: column wrap;
+
+  .fixed-main & {
+    height: 100%;
+    overflow: hidden;
+  }
+}
+
+.container {
+  display: block;
+  margin: 0 auto;
+
+  @media all and (min-width: 1200px) {
+    width: 1400px;
+  }
+}

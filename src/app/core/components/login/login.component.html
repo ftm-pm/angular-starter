@@ -1,0 +1,33 @@
+<mat-card class="example-card">
+  <mat-card-content>
+    <h3>{{ 'sign.in' | translate }}</h3>
+    <form class="example-form" [formGroup]="form">
+      <mat-form-field class="example-full-width">
+        <input matInput placeholder="{{ 'sign.username' | translate }}" [formControl]="form.controls['username']" [errorStateMatcher]="matcher">
+        <mat-error *ngIf="form.controls['username'].hasError('email') && !form.controls['username'].hasError('required')">
+          {{ 'sign.error.username' | translate }}
+        </mat-error>
+        <mat-error *ngIf="form.controls['username'].hasError('required')">
+          {{ 'sign.error.username' | translate }}
+        </mat-error>
+      </mat-form-field>
+
+      <mat-form-field class="example-full-width">
+        <input matInput type="password" placeholder="{{ 'sign.password' | translate }}" [formControl]="form.controls['password']" [errorStateMatcher]="matcher">
+        <!--<mat-hint>Errors appear instantly!</mat-hint>-->
+        <mat-error *ngIf="form.controls['password'].hasError('password') && !form.controls['password'].hasError('required')">
+          {{ 'sign.error.password' | translate }}
+        </mat-error>
+        <mat-error *ngIf="form.controls['password'].hasError('required')">
+          {{ 'sign.error.password' | translate }}
+        </mat-error>
+      </mat-form-field>
+
+      <mat-error *ngIf="error">
+        {{ 'sign.error.form' | translate }}
+      </mat-error>
+
+      <button mat-raised-button color="primary" [disabled]="!form.valid" (click)="onSubmit(form.value, $event)">{{ 'actions.signin' | translate }}</button>
+    </form>
+  </mat-card-content>
+</mat-card>

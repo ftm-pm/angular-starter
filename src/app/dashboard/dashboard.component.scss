@@ -1,0 +1,8 @@
+@import "../core/stylesheets/mixin";
+
+@include page();
+
+.mat-card {
+  margin: 1rem;
+  flex: 1 0;
+}

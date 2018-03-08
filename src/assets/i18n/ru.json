@@ -1,0 +1,52 @@
+{
+  "copyright": "© 2018. Все права защищены.",
+  "languages": {
+    "en": "Английский",
+    "ru": "Русский"
+  },
+  "menu": {
+    "dashboard": "Панель",
+    "login": "Войти",
+    "logout": "Выйти"
+  },
+  "actions": {
+    "view": "Посмотреть",
+    "details": "Подробнее",
+    "signin": "Войти",
+    "signout": "Выйти",
+    "reset": "Сбросить",
+    "open": "Открыть",
+    "close": "Закрыть",
+    "cancel": "Отменить",
+    "prev": "Назад",
+    "next": "Вперед",
+    "load": "Загрузить",
+    "save": "Сохранить",
+    "create": "Создать",
+    "remove": "Удалить",
+    "delete": "Удалить",
+    "select": "Выбрать",
+    "edit": "Редактировать",
+    "yes": "Да",
+    "no": "Нет"
+  },
+  "sign": {
+    "username": "Логин",
+    "email": "Email",
+    "password": "Пароль",
+    "repeatPassword": "Повторите пароль",
+    "reset": "Восстановить пароль",
+    "register": "Регистрация",
+    "in": "Войти",
+    "out": "Выйти",
+    "error": {
+      "form": "Аккаунт не найден",
+      "username": "Логин обязателен",
+      "password": "Пароль обязателен"
+    }
+  },
+  "dashboard": {
+    "title": "Dashboard",
+    "description": "Angular UI Skeleton."
+  }
+}

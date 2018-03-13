@@ -5,6 +5,7 @@ export const environment = {
   api: '',
   apiPrefix: '',
   media: '',
+  mediaPrefix: '',
   languages: ['en'],
   defaultLanguage: 'en'
 };

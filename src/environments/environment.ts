@@ -10,6 +10,7 @@ export const environment = {
   api: 'http://symfony-api',
   apiPrefix: 'api',
   media: 'http://symfony-media',
+  mediaPrefix: 'media',
   languages: ['en', 'ru'],
   defaultLanguage: 'ru'
 };

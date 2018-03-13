@@ -13,6 +13,7 @@ import { TranslateModule } from '@ngx-translate/core';
 
 import { throwIfAlreadyLoaded } from './guard/module-import-guard';
 import { HeaderInterceptor } from './interceptor/header.interceptor';
+import { JwtInterceptor } from './interceptor/jwt.interceptor';
 import { CoreRoutingModule } from './core-routing.module';
 import { NavComponent } from './components/nav/nav.component';
 import { ToolbarComponent } from './components/toolbar/toolbar.component';
@@ -22,6 +23,7 @@ import { TokenService } from './services/token.service';
 import { LoginComponent } from './components/login/login.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { LogoutComponent } from './components/logout/logout.component';
+
 
 const CORE_COMPONENTS = [
   NavComponent,
@@ -62,6 +64,11 @@ const CORE_SERVICES = [
     {
       provide: HTTP_INTERCEPTORS,
       useClass: HeaderInterceptor,
+      multi: true
+    },
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: JwtInterceptor,
       multi: true
     }
   ]

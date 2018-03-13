@@ -64,6 +64,9 @@ export class AuthService {
 
   /**
    * Login
+   *
+   * @param data
+   * @returns {Observable<any>}
    */
   public login(data: any) {
     const path: string = `${environment.api}/${environment.apiPrefix}/token/get`;
@@ -77,6 +80,29 @@ export class AuthService {
         return response;
       })
       .catch(this.handleError);
+  }
+
+  /**
+   * @returns {Observable<any>}
+   */
+  public refresh() {
+    const path: string = `${environment.api}/${environment.apiPrefix}/token/refresh`;
+    const data = {
+      'refresh_token': TokenService.getRefreshToken()
+    };
+
+    return this.httpClient.post<HttpResponse<any>>(path, JSON.stringify(data))
+      .map(response => {
+        TokenService.setAccessToken(response['token']);
+        TokenService.setRefreshToken(response['refresh_token']);
+        this.setAuthenticated(true);
+
+        return response;
+      })
+      .catch(error => {
+        TokenService.removeToken(null);
+        return Observable.throw(error);
+      });
   }
 
   /**

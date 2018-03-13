@@ -2,10 +2,9 @@ import { Injectable } from '@angular/core';
 import { HttpEvent, HttpInterceptor, HttpHandler, HttpRequest } from '@angular/common/http';
 import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/operator/do';
+
 import { AuthService } from '../services/auth.service';
 import { TokenService } from '../services/token.service';
-
-// import { AuthService, TokenService } from '../services';
 
 @Injectable()
 export class HeaderInterceptor implements HttpInterceptor {
@@ -17,9 +16,7 @@ export class HeaderInterceptor implements HttpInterceptor {
   public constructor(public authService: AuthService) {}
 
   /**
-   * @param {HttpRequest<any>} req
-   * @param {HttpHandler} next
-   * @returns {Observable<HttpEvent<any>>}
+   * @inheritDoc
    */
   public intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
 
@@ -27,9 +24,9 @@ export class HeaderInterceptor implements HttpInterceptor {
       req = req.clone({headers: req.headers.set('Content-Type', 'application/json')});
     }
 
-    // if (this.authService.isAuthenticated()) {
-    //   req = req.clone({headers: req.headers.set('Authorization', `Bearer ${TokenService.getAccessToken()}`)});
-    // }
+    if (this.authService.isAuthenticated()) {
+      req = req.clone({headers: req.headers.set('Authorization', `Bearer ${TokenService.getAccessToken()}`)});
+    }
 
     return next.handle(req);
   }

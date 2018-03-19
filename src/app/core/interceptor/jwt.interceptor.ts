@@ -43,7 +43,7 @@ export class JwtInterceptor implements HttpInterceptor {
 
     return next.handle(req)
       .catch(error => {
-        if (error instanceof HttpErrorResponse && !this.isRefresh) {
+        if (error instanceof HttpErrorResponse && !this.isRefresh && authApi && authApi.refresh) {
           const status: number = (<HttpErrorResponse>error).status;
           this.isRefresh = true;
           if (status === 400 || status === 401) {
@@ -65,9 +65,10 @@ export class JwtInterceptor implements HttpInterceptor {
               .catch(() => {
                 this.isRefresh = false;
                 TokenService.removeToken(apiName);
-
                 return this.router.navigate(['/login']);
               });
+          } else {
+            return Observable.throw(error);
           }
         } else {
           return Observable.throw(error);

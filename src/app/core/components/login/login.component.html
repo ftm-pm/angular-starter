@@ -1,8 +1,8 @@
-<mat-card class="example-card">
+<mat-card *ngIf="!submitted; else spinner;">
   <mat-card-content>
     <h3>{{ 'sign.in' | translate }}</h3>
-    <form class="example-form" [formGroup]="form">
-      <mat-form-field class="example-full-width">
+    <form class="login-form" [formGroup]="form">
+      <mat-form-field class="login-field-full-width">
         <input matInput placeholder="{{ 'sign.username' | translate }}" [formControl]="form.controls['username']" [errorStateMatcher]="matcher">
         <mat-error *ngIf="form.controls['username'].hasError('email') && !form.controls['username'].hasError('required')">
           {{ 'sign.error.username' | translate }}
@@ -12,7 +12,7 @@
         </mat-error>
       </mat-form-field>
 
-      <mat-form-field class="example-full-width">
+      <mat-form-field class="login-field-full-width">
         <input matInput type="password" placeholder="{{ 'sign.password' | translate }}" [formControl]="form.controls['password']" [errorStateMatcher]="matcher">
         <!--<mat-hint>Errors appear instantly!</mat-hint>-->
         <mat-error *ngIf="form.controls['password'].hasError('password') && !form.controls['password'].hasError('required')">
@@ -31,3 +31,6 @@
     </form>
   </mat-card-content>
 </mat-card>
+<ng-template #spinner>
+  <mat-spinner></mat-spinner>
+</ng-template>

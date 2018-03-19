@@ -16,6 +16,7 @@ export class LoginComponent implements OnInit, OnDestroy {
   public form: FormGroup;
   public matcher: ErrorStateMatcher;
   public error: boolean;
+  public submitted: boolean;
 
   /**
    * Constructor LoginComponent
@@ -32,6 +33,7 @@ export class LoginComponent implements OnInit, OnDestroy {
     this.matcher = new ErrorStateMatcher();
     this.subscription = new Subscription();
     this.error = false;
+    this.submitted = false;
   }
 
   /**
@@ -39,7 +41,7 @@ export class LoginComponent implements OnInit, OnDestroy {
    */
   public ngOnInit(): void {
     this.subscription.add(this.authService.getAuthenticated().subscribe(logged => {
-      if(logged) {
+      if (logged) {
         this.router.navigate(['/']);
       }
     }));
@@ -61,10 +63,12 @@ export class LoginComponent implements OnInit, OnDestroy {
   public onSubmit(formValue, event: MouseEvent) {
     if (this.form.valid) {
       this.error = false;
+      this.submitted = true;
       this.subscription.add(this.authService.login(formValue).subscribe(response => {
-          console.log('auth');
+          this.submitted = false;
         }, error => {
           this.error = true;
+          this.submitted = false;
         })
       );
     }

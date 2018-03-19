@@ -6,6 +6,7 @@ import {
   MatCardModule,
   MatIconModule,
   MatInputModule,
+  MatProgressSpinnerModule,
   MatTabsModule,
   MatToolbarModule
 } from '@angular/material';
@@ -45,6 +46,7 @@ const CORE_SERVICES = [
     MatCardModule,
     MatIconModule,
     MatInputModule,
+    MatProgressSpinnerModule,
     MatTabsModule,
     MatToolbarModule,
     TranslateModule.forChild(),

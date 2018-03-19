@@ -1,6 +1,7 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { AuthService } from './core/services/auth.service';
 import { Subscription } from 'rxjs/Subscription';
+
+import { AuthService } from './core/services/auth.service';
 import { TokenService } from './core/services/token.service';
 import { environment } from '../environments/environment';
 
@@ -17,6 +18,7 @@ export class AppComponent implements OnInit, OnDestroy {
    */
   public constructor(private authService: AuthService) {
     this.subscription = new Subscription();
+    AuthService.init();
   }
 
   /**
@@ -25,7 +27,7 @@ export class AppComponent implements OnInit, OnDestroy {
   public ngOnInit(): void {
     // TODO: Remove from component
     this.subscription.add(this.authService.getAuthenticated().subscribe(logged => {
-      if (!logged && TokenService.getRefreshToken(environment.api.backend.name)) {
+      if (!logged && environment.api.backend.refresh) {
         this.subscription.add(this.authService.refresh().subscribe());
       }
     }));

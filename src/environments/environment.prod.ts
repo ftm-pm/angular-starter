@@ -9,13 +9,17 @@ export const environment = {
       system: false,
       name: 'backend',
       path: '',
-      jwt: true
+      jwt: true,
+      refresh: true
     },
     media: {
       system: true,
       name: 'media',
       path: '',
-      jwt: true
+      jwt: true,
+      refresh: false,
+      token: '',
+      refreshToken: ''
     }
   },
   languages: ['en'],

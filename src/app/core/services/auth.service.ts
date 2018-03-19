@@ -7,6 +7,7 @@ import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 import 'rxjs/add/operator/catch';
 import 'rxjs/add/operator/map';
 import 'rxjs/add/observable/throw';
+import 'rxjs/add/observable/of';
 
 import { TokenService } from './token.service';
 import { environment } from '../../../environments/environment';
@@ -25,6 +26,23 @@ export class AuthService {
   public constructor(private httpClient: HttpClient, public jwtHelperService: JwtHelperService) {
     if (this.auth === undefined) {
       this.auth = new BehaviorSubject<boolean>(this.isAuthenticated());
+    }
+  }
+
+  /**
+   * Init
+   */
+  public static init(): void {
+    for (const key in environment.api) {
+      if (environment.api.hasOwnProperty(key)) {
+        const api = environment.api[key];
+        if (api.token) {
+          TokenService.setAccessToken(api.token, api.name);
+        }
+        if (api.refreshToken) {
+          TokenService.setRefreshToken(api.refreshToken, api.name);
+        }
+      }
     }
   }
 
@@ -94,6 +112,10 @@ export class AuthService {
     const data = {
       'refresh_token': TokenService.getRefreshToken(this.defaultApi)
     };
+
+    if (!data['refresh_token']) {
+      return Observable.of(null);
+    }
 
     return this.httpClient.post<HttpResponse<any>>(path, JSON.stringify(data))
       .map(response => {

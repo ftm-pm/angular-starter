@@ -2,6 +2,7 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { AuthService } from './core/services/auth.service';
 import { Subscription } from 'rxjs/Subscription';
 import { TokenService } from './core/services/token.service';
+import { environment } from '../environments/environment';
 
 @Component({
   selector: 'app-root',
@@ -22,8 +23,9 @@ export class AppComponent implements OnInit, OnDestroy {
    * @inheritDoc
    */
   public ngOnInit(): void {
+    // TODO: Remove from component
     this.subscription.add(this.authService.getAuthenticated().subscribe(logged => {
-      if (!logged && TokenService.getRefreshToken()) {
+      if (!logged && TokenService.getRefreshToken(environment.api.backend.name)) {
         this.subscription.add(this.authService.refresh().subscribe());
       }
     }));

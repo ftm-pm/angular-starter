@@ -6,7 +6,7 @@ import { environment } from '../../../environments/environment';
 
 @Injectable()
 export class LanguageService {
-  private static prefix: string  = environment.appId;
+  private static prefix: string  = environment.app.id;
   private static languages: string[] = environment.languages;
   private static defaultLanguage: string = environment.defaultLanguage;
 

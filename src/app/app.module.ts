@@ -22,9 +22,9 @@ import { environment } from '../environments/environment';
     JwtModule.forRoot({
       config: {
         tokenGetter: () => {
-          return TokenService.getAccessToken();
+          return TokenService.getAccessToken(environment.api.backend.name);
         },
-        whitelistedDomains: [environment.api, environment.media]
+        whitelistedDomains: [environment.api.backend.path, environment.api.media.path]
       }
     }),
     AppRoutingModule,

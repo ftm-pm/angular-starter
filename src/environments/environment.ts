@@ -5,12 +5,24 @@
 
 export const environment = {
   production: false,
-  appId: 'angularui',
-  app: 'http://localhost:4200',
-  api: 'http://symfony-api',
-  apiPrefix: 'api',
-  media: 'http://symfony-media',
-  mediaPrefix: 'media',
+  app: {
+    id: 'angular-ui-skeleton',
+    path: 'http://localhost:4200',
+  },
+  api: {
+    backend: {
+      system: false,
+      name: 'backend',
+      path: 'http://symfony-api',
+      jwt: true
+    },
+    media: {
+      system: true,
+      name: 'media',
+      path: 'http://symfony-media',
+      jwt: true
+    }
+  },
   languages: ['en', 'ru'],
   defaultLanguage: 'ru'
 };

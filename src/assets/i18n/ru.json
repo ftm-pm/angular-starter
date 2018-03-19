@@ -46,7 +46,7 @@
     }
   },
   "dashboard": {
-    "title": "Dashboard",
-    "description": "Angular UI Skeleton."
+    "title": "Панель управления",
+    "description": "Пустая страница Angular UI Skeleton."
   }
 }

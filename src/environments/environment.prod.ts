@@ -1,11 +1,23 @@
 export const environment = {
   production: true,
-  appId: '',
-  app: '',
-  api: '',
-  apiPrefix: '',
-  media: '',
-  mediaPrefix: '',
+  app: {
+    id: '',
+    path: ''
+  },
+  api: {
+    backend: {
+      system: false,
+      name: 'backend',
+      path: '',
+      jwt: true
+    },
+    media: {
+      system: true,
+      name: 'media',
+      path: '',
+      jwt: true
+    }
+  },
   languages: ['en'],
   defaultLanguage: 'en'
 };

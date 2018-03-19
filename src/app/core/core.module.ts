@@ -12,7 +12,7 @@ import {
 import { TranslateModule } from '@ngx-translate/core';
 
 import { throwIfAlreadyLoaded } from './guard/module-import-guard';
-import { HeaderInterceptor } from './interceptor/header.interceptor';
+import { ContentTypeInterceptor } from './interceptor/content-type.interceptor';
 import { JwtInterceptor } from './interceptor/jwt.interceptor';
 import { CoreRoutingModule } from './core-routing.module';
 import { NavComponent } from './components/nav/nav.component';
@@ -63,7 +63,7 @@ const CORE_SERVICES = [
     ...CORE_SERVICES,
     {
       provide: HTTP_INTERCEPTORS,
-      useClass: HeaderInterceptor,
+      useClass: ContentTypeInterceptor,
       multi: true
     },
     {

@@ -48,5 +48,16 @@
   "dashboard": {
     "title": "Панель управления",
     "description": "Пустая страница Angular UI Skeleton."
+  },
+  "shared": {
+    "imageWidget": {
+      "placeholder": "Изображение",
+      "valuePlaceholder": "Файл не выбран",
+      "error": {
+        "required": "Пожалуйста, выберите файл",
+        "maxSize": "Размер файла не может превышать "
+      },
+      "loading": "Загрузка..."
+    }
   }
 }

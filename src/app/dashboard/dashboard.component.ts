@@ -1,5 +1,7 @@
 import { Component, OnDestroy, OnInit, Inject } from '@angular/core';
-import { AuthService } from '../core/services/auth.service';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+
+import { FileValidators } from '../shared/validators/file-validators';
 
 @Component({
   selector: 'app-dashboard',
@@ -8,11 +10,15 @@ import { AuthService } from '../core/services/auth.service';
 })
 export class DashboardComponent implements OnInit, OnDestroy {
   public data: any[];
+  public form: FormGroup;
 
   /**
    * Constructor DashboardComponent
    */
-  public constructor() {
+  public constructor(private formBuilder: FormBuilder) {
+    this.form = this.formBuilder.group({
+      image: ['', [Validators.required]],
+    });
   }
 
   /**

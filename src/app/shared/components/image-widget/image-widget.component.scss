@@ -1,0 +1,21 @@
+/deep/ .mat-form-field-suffix {
+  cursor: pointer;
+}
+
+.preview-list {
+  display: flex;
+  flex-flow: row wrap;
+}
+
+.preview-box {
+  width: 200px;
+  height: 200px;
+  display: flex;
+  background-color: #ccc;
+  overflow: hidden;
+}
+
+.preview-box-img {
+  margin: auto;
+  max-height: 100%;
+}

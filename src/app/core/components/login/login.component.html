@@ -1,7 +1,7 @@
 <mat-card *ngIf="!submitted; else spinner;">
   <mat-card-content>
     <h3>{{ 'sign.in' | translate }}</h3>
-    <form class="login-form" [formGroup]="form">
+    <form class="login-form" [formGroup]="form" (ngSubmit)="onSubmit(form.value, $event)">
       <mat-form-field class="login-field-full-width">
         <input matInput placeholder="{{ 'sign.username' | translate }}" [formControl]="form.controls['username']" [errorStateMatcher]="matcher">
         <mat-error *ngIf="form.controls['username'].hasError('email') && !form.controls['username'].hasError('required')">
@@ -27,7 +27,7 @@
         {{ 'sign.error.form' | translate }}
       </mat-error>
 
-      <button mat-raised-button color="primary" [disabled]="!form.valid" (click)="onSubmit(form.value, $event)">{{ 'actions.signin' | translate }}</button>
+      <button type="button" mat-raised-button color="primary" [disabled]="!form.valid" (click)="onSubmit(form.value, $event)">{{ 'actions.signin' | translate }}</button>
     </form>
   </mat-card-content>
 </mat-card>

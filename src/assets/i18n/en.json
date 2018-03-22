@@ -48,5 +48,16 @@
   "dashboard": {
     "title": "Dashboard",
     "description": "Angular UI Skeleton."
+  },
+  "shared": {
+    "imageWidget": {
+      "placeholder": "Image file",
+      "valuePlaceholder": "No file selected",
+      "error": {
+        "required": "Please select a file",
+        "maxSize": "The total size must not exceed"
+      },
+      "loading": "Loading..."
+    }
   }
 }

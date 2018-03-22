@@ -1,4 +1,5 @@
 <mat-card>
   <h2>{{ 'dashboard.title' | translate }}</h2>
   <p>{{ 'dashboard.description' | translate }}</p>
+  <app-image-widget class="image-widget image-widget_full" [formControl]="form.get('image')"></app-image-widget>
 </mat-card>

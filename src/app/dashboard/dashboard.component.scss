@@ -6,3 +6,10 @@
   margin: 1rem;
   flex: 1 0;
 }
+
+.image-widget {
+  &_full {
+    display: flex;
+    flex-flow: column wrap;
+  }
+}

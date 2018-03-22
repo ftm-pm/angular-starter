@@ -64,7 +64,8 @@ export class LoginComponent implements OnInit, OnDestroy {
     if (this.form.valid) {
       this.error = false;
       this.submitted = true;
-      this.subscription.add(this.authService.login(formValue).subscribe(response => {
+      this.subscription.add(this.authService.login(formValue)
+        .subscribe(response => {
           this.submitted = false;
         }, error => {
           this.error = true;

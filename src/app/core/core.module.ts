@@ -7,6 +7,7 @@ import {
   MatCardModule,
   MatIconModule,
   MatInputModule,
+  MatMenuModule,
   MatProgressSpinnerModule,
   MatTabsModule,
   MatToolbarModule
@@ -25,7 +26,6 @@ import { NavComponent } from './components/nav/nav.component';
 import { ToolbarComponent } from './components/toolbar/toolbar.component';
 import { LoginComponent } from './components/login/login.component';
 import { LogoutComponent } from './components/logout/logout.component';
-
 
 const CORE_COMPONENTS = [
   NavComponent,
@@ -48,6 +48,7 @@ const CORE_SERVICES = [
     MatCardModule,
     MatIconModule,
     MatInputModule,
+    MatMenuModule,
     MatProgressSpinnerModule,
     MatTabsModule,
     MatToolbarModule,

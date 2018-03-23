@@ -10,4 +10,12 @@
   <a mat-icon-button routerLink="logout" *ngIf="logged">
     <mat-icon>power_settings_new</mat-icon>
   </a>
+  <button class="nav-language" mat-icon-button [matMenuTriggerFor]="appMenu">
+    {{ language }}
+  </button>
+  <mat-menu #appMenu="matMenu">
+    <button class="nav-language" mat-menu-item *ngFor="let lang of languages" (click)="onSelectLanguage(lang)">
+      {{ lang }}
+    </button>
+  </mat-menu>
 </div>

@@ -31,8 +31,8 @@ export class ImageWidgetComponent implements OnInit, OnDestroy, AfterViewInit {
   @Input() public options: ImageWidgetOptions = <ImageWidgetOptions>{
     disabled: false,
     required: false,
-    multiple: true,
-    showPreview: true,
+    multiple: false,
+    showPreview: false,
     validators: [Validators.required]
   };
   @Input() public formControl: FormControl;
@@ -62,6 +62,12 @@ export class ImageWidgetComponent implements OnInit, OnDestroy, AfterViewInit {
    * @inheritDoc
    */
   public ngOnInit(): void {
+    if (this.options.disabled === undefined) {
+      this.options.disabled = false;
+    }
+    if (!this.options.validators) {
+      this.options.validators = [Validators.required];
+    }
     this.imageFormControl = new FormControl({ value: undefined, disabled: this.options.disabled }, this.options.validators);
   }
 

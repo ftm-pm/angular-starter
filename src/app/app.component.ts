@@ -18,7 +18,6 @@ export class AppComponent implements OnInit, OnDestroy {
    */
   public constructor(private authService: AuthService) {
     this.subscription = new Subscription();
-    AuthService.init();
   }
 
   /**
@@ -27,7 +26,7 @@ export class AppComponent implements OnInit, OnDestroy {
   public ngOnInit(): void {
     // TODO: Remove from component
     this.subscription.add(this.authService.getAuthenticated().subscribe(logged => {
-      if (!logged && environment.api.backend.refresh) {
+      if (!logged && environment.api.refresh) {
         this.subscription.add(this.authService.refresh().subscribe());
       }
     }));

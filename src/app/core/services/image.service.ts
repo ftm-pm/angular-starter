@@ -12,7 +12,7 @@ export class ImageService extends RestService<Image> {
    * @inheritDoc
    */
   public constructor(protected httpClient: HttpClient) {
-    super(`${environment.api.media.path}/api/images`);
+    super(`${environment.api.path}/api/media/images`);
   }
 
   /**

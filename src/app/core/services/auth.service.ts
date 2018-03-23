@@ -15,7 +15,6 @@ import { environment } from '../../../environments/environment';
 @Injectable()
 export class AuthService {
   private auth: BehaviorSubject<boolean>;
-  private defaultApi: string = environment.api.backend.name;
 
   /**
    * Constructor AuthService
@@ -30,27 +29,10 @@ export class AuthService {
   }
 
   /**
-   * Init
-   */
-  public static init(): void {
-    for (const key in environment.api) {
-      if (environment.api.hasOwnProperty(key)) {
-        const api = environment.api[key];
-        if (api.token) {
-          TokenService.setAccessToken(api.token, api.name);
-        }
-        if (api.refreshToken) {
-          TokenService.setRefreshToken(api.refreshToken, api.name);
-        }
-      }
-    }
-  }
-
-  /**
    * @returns {boolean}
    */
-  public isAuthenticated(apiName: string = environment.api.backend.name): boolean {
-    const token = TokenService.getAccessToken(apiName);
+  public isAuthenticated(): boolean {
+    const token = TokenService.getAccessToken();
 
     return token && !this.jwtHelperService.isTokenExpired(token);
   }
@@ -70,34 +52,19 @@ export class AuthService {
   }
 
   /**
-   * @returns {any | null}
-   */
-  public getAuthenticatedData():  any|null {
-    const token = TokenService.getAccessToken(this.defaultApi);
-    if (!token) {
-      return;
-    }
-
-    return jwtDecode(token);
-  }
-
-  /**
    * Login
    *
    * @param data
-   * @param {string} apiName
    * @returns {Observable<any>}
    */
-  public login(data: any, apiName: string = environment.api.backend.name) {
-    const path: string = `${environment.api[apiName].path}/api/token/get`;
+  public login(data: any) {
+    const path: string = `${environment.api.path}/api/token/get`;
 
     return this.httpClient.post<HttpResponse<any>>(path, JSON.stringify(data))
       .map(response => {
-        TokenService.setAccessToken(response['token'], apiName);
-        TokenService.setRefreshToken(response['refresh_token'], apiName);
-        if (apiName === environment.api.backend.name) {
-          this.setAuthenticated(true);
-        }
+        TokenService.setAccessToken(response['token']);
+        TokenService.setRefreshToken(response['refresh_token']);
+        this.setAuthenticated(true);
 
         return response;
       })
@@ -107,10 +74,10 @@ export class AuthService {
   /**
    * @returns {Observable<any>}
    */
-  public refresh(apiName: string = environment.api.backend.name) {
-    const path: string = `${environment.api[apiName].path}/api/token/refresh`;
+  public refresh() {
+    const path: string = `${environment.api.path}/api/token/refresh`;
     const data = {
-      'refresh_token': TokenService.getRefreshToken(this.defaultApi)
+      'refresh_token': TokenService.getRefreshToken()
     };
 
     if (!data['refresh_token']) {
@@ -119,14 +86,14 @@ export class AuthService {
 
     return this.httpClient.post<HttpResponse<any>>(path, JSON.stringify(data))
       .map(response => {
-        TokenService.setAccessToken(response['token'], this.defaultApi);
-        TokenService.setRefreshToken(response['refresh_token'], this.defaultApi);
+        TokenService.setAccessToken(response['token']);
+        TokenService.setRefreshToken(response['refresh_token']);
         this.setAuthenticated(true);
 
         return response;
       })
       .catch(error => {
-        TokenService.removeToken(null);
+        TokenService.removeToken();
         return Observable.throw(error);
       });
   }
@@ -135,7 +102,7 @@ export class AuthService {
    * Login
    */
   public logout(): void {
-    TokenService.removeToken(this.defaultApi);
+    TokenService.removeToken();
     this.setAuthenticated(false);
   }
 

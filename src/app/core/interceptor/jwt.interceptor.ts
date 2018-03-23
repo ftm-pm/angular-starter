@@ -29,42 +29,25 @@ export class JwtInterceptor implements HttpInterceptor {
    * @inheritDoc
    */
   public intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
-    let authApi: any;
-    for (const key in environment.api) {
-      if (environment.api.hasOwnProperty(key)) {
-        const api = environment.api[key];
-        if (api.jwt && req.url.indexOf(api.path) >= 0) {
-          req = req.clone({headers: req.headers.set('Authorization', `Bearer ${TokenService.getAccessToken(api.name)}`)});
-          authApi = api;
-          break;
-        }
-      }
-    }
+    const api: any = environment.api;
+    req = req.clone({headers: req.headers.set('Authorization', `Bearer ${TokenService.getAccessToken()}`)});
 
     return next.handle(req)
       .catch(error => {
-        if (error instanceof HttpErrorResponse && !this.isRefresh && authApi && authApi.refresh) {
+        if (error instanceof HttpErrorResponse && !this.isRefresh && api.refresh) {
           const status: number = (<HttpErrorResponse>error).status;
           this.isRefresh = true;
           if (status === 400 || status === 401) {
-            let apiName: string = null;
-            if (authApi) {
-              apiName = authApi.name;
-            }
-
-            return this.authService.refresh(apiName)
+            return this.authService.refresh()
               .flatMap(token => {
                 this.isRefresh = false;
-                let newRequest = req;
-                if (authApi) {
-                  newRequest = req.clone({headers: req.headers.set('Authorization', `Bearer ${TokenService.getAccessToken(apiName)}`)});
-                }
+                const newRequest = req.clone({headers: req.headers.set('Authorization', `Bearer ${TokenService.getAccessToken()}`)});
 
                 return next.handle(newRequest);
               })
               .catch(() => {
                 this.isRefresh = false;
-                TokenService.removeToken(apiName);
+                TokenService.removeToken();
                 return this.router.navigate(['/login']);
               });
           } else {

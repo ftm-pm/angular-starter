@@ -24,9 +24,9 @@ import { TokenService } from './core/services/token.service';
     JwtModule.forRoot({
       config: {
         tokenGetter: () => {
-          return TokenService.getAccessToken(environment.api.backend.name);
+          return TokenService.getAccessToken();
         },
-        whitelistedDomains: [environment.api.backend.path, environment.api.media.path]
+        whitelistedDomains: [environment.api.path]
       }
     }),
     AppRoutingModule,

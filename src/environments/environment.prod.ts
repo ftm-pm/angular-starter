@@ -1,16 +1,15 @@
 export const environment = {
   production: true,
   app: {
-    id: '',
-    path: ''
+    id: 'angular-ui-skeleton',
+    path: 'http://localhost:4200',
   },
   api: {
-    system: false,
     name: 'backend',
-    path: '',
+    path: 'http://symfony-api',
     jwt: true,
     refresh: true
   },
-  languages: ['en'],
-  defaultLanguage: 'en'
+  languages: ['en', 'ru'],
+  defaultLanguage: 'ru'
 };

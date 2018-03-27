@@ -1,6 +1,7 @@
-import { Injectable } from '@angular/core';
+import { Inject, Injectable, PLATFORM_ID } from '@angular/core';
 
 import { environment } from '../../../environments/environment';
+import { isPlatformBrowser } from '@angular/common';
 
 @Injectable()
 export class TokenService {
@@ -9,41 +10,49 @@ export class TokenService {
   /**
    * TokenService
    */
-  public constructor() {}
+  public constructor(@Inject(PLATFORM_ID) private platformId: any,
+                     @Inject('LOCALSTORAGE') private localStorage: any) {
+  }
 
   /**
    * Get access token
    */
-  public static getAccessToken(): string {
-    return localStorage.getItem(`${TokenService.appId}_access_token`);
+  public getAccessToken(): string | null {
+    return isPlatformBrowser(this.platformId) ? this.localStorage.getItem(`${TokenService.appId}_access_token`) : null;
   }
 
   /**
    * Get refresh token
    */
-  public static getRefreshToken(): string {
-    return localStorage.getItem(`${TokenService.appId}_refresh_token`);
+  public getRefreshToken(): string {
+    return isPlatformBrowser(this.platformId) ? this.localStorage.getItem(`${TokenService.appId}_refresh_token`) : null;
   }
 
   /**
    * Set access token
    */
-  public static setAccessToken(token: string): void {
-    localStorage.setItem(`${TokenService.appId}_access_token`, token);
+  public setAccessToken(token: string): void {
+    if (isPlatformBrowser(this.platformId)) {
+      this.localStorage.setItem(`${TokenService.appId}_access_token`, token);
+    }
   }
 
   /**
    * Set refresh token
    */
-  public static setRefreshToken(token: string): void {
-    localStorage.setItem(`${TokenService.appId}_refresh_token`, token);
+  public setRefreshToken(token: string): void {
+    if (isPlatformBrowser(this.platformId)) {
+      this.localStorage.setItem(`${TokenService.appId}_refresh_token`, token);
+    }
   }
 
   /**
    * Set refresh token
    */
-  public static removeToken(): void {
-    localStorage.removeItem(`${TokenService.appId}_access_token`);
-    localStorage.removeItem(`${TokenService.appId}_refresh_token`);
+  public removeToken(): void {
+    if (isPlatformBrowser(this.platformId)) {
+      this.localStorage.removeItem(`${TokenService.appId}_access_token`);
+      this.localStorage.removeItem(`${TokenService.appId}_refresh_token`);
+    }
   }
 }

@@ -25,8 +25,8 @@ export class NavComponent implements OnInit, OnDestroy {
    */
   public constructor(private authService: AuthService, private languageService: LanguageService) {
     this.menu = menu;
-    this.language = LanguageService.getLanguage();
-    this.languages = LanguageService.getLanguages();
+    this.language = this.languageService.getLanguage();
+    this.languages = this.languageService.getLanguages();
     this.logged = false;
     this.subscription = new Subscription();
   }

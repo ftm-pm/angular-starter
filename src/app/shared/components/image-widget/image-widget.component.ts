@@ -1,4 +1,4 @@
-import { AfterContentInit, AfterViewInit, Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { Subscription } from 'rxjs/Subscription';
 import { Subject } from 'rxjs/Subject';
@@ -26,7 +26,7 @@ export interface ImageWidgetOptions {
   templateUrl: './image-widget.component.html',
   styleUrls: ['./image-widget.component.scss']
 })
-export class ImageWidgetComponent implements OnInit, OnDestroy, AfterViewInit {
+export class ImageWidgetComponent implements OnInit, OnDestroy {
   private subscription: Subscription;
   @Input() public options: ImageWidgetOptions = <ImageWidgetOptions>{
     disabled: false,
@@ -52,10 +52,6 @@ export class ImageWidgetComponent implements OnInit, OnDestroy, AfterViewInit {
     this.success  = new EventEmitter<any>();
     this.submitted = false;
     this.files = new Subject<File[]>();
-  }
-
-  public ngAfterViewInit(): void {
-    console.log(this.formControl);
   }
 
   /**

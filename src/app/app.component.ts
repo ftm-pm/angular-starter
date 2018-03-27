@@ -1,9 +1,10 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, Inject, OnDestroy, OnInit, PLATFORM_ID } from '@angular/core';
 import { Subscription } from 'rxjs/Subscription';
 
 import { AuthService } from './core/services/auth.service';
 import { TokenService } from './core/services/token.service';
 import { environment } from '../environments/environment';
+import { isPlatformBrowser } from '@angular/common';
 
 @Component({
   selector: 'app-root',
@@ -16,7 +17,7 @@ export class AppComponent implements OnInit, OnDestroy {
   /**
    * Constructor AppComponent
    */
-  public constructor(private authService: AuthService) {
+  public constructor(private authService: AuthService, @Inject(PLATFORM_ID) private platformId: Object) {
     this.subscription = new Subscription();
   }
 
@@ -25,11 +26,13 @@ export class AppComponent implements OnInit, OnDestroy {
    */
   public ngOnInit(): void {
     // TODO: Remove from component
-    this.subscription.add(this.authService.getAuthenticated().subscribe(logged => {
-      if (!logged && environment.api.refresh) {
-        this.subscription.add(this.authService.refresh().subscribe());
-      }
-    }));
+    if (isPlatformBrowser(this.platformId)) {
+      this.subscription.add(this.authService.getAuthenticated().subscribe(logged => {
+        if (!logged && environment.api.refresh) {
+          this.subscription.add(this.authService.refresh().subscribe());
+        }
+      }));
+    }
   }
 
   /**

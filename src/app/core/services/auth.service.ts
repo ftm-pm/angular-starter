@@ -1,7 +1,6 @@
-import { Injectable } from '@angular/core';
+import { forwardRef, Inject, Injectable } from '@angular/core';
 import { HttpClient, HttpErrorResponse, HttpResponse } from '@angular/common/http';
 import { JwtHelperService } from '@auth0/angular-jwt';
-import * as jwtDecode from 'jwt-decode';
 import { Observable } from 'rxjs/Observable';
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 import 'rxjs/add/operator/catch';
@@ -22,7 +21,7 @@ export class AuthService {
    * @param {HttpClient} httpClient
    * @param {JwtHelperService} jwtHelperService
    */
-  public constructor(private httpClient: HttpClient, public jwtHelperService: JwtHelperService) {
+  public constructor(private httpClient: HttpClient, private jwtHelperService: JwtHelperService, private tokenService: TokenService ) {
     if (this.auth === undefined) {
       this.auth = new BehaviorSubject<boolean>(this.isAuthenticated());
     }
@@ -32,7 +31,7 @@ export class AuthService {
    * @returns {boolean}
    */
   public isAuthenticated(): boolean {
-    const token = TokenService.getAccessToken();
+    const token = this.tokenService.getAccessToken();
 
     return token && !this.jwtHelperService.isTokenExpired(token);
   }
@@ -62,8 +61,8 @@ export class AuthService {
 
     return this.httpClient.post<HttpResponse<any>>(path, JSON.stringify(data))
       .map(response => {
-        TokenService.setAccessToken(response['token']);
-        TokenService.setRefreshToken(response['refresh_token']);
+        this.tokenService.setAccessToken(response['token']);
+        this.tokenService.setRefreshToken(response['refresh_token']);
         this.setAuthenticated(true);
 
         return response;
@@ -77,7 +76,7 @@ export class AuthService {
   public refresh() {
     const path: string = `${environment.api.path}/api/token/refresh`;
     const data = {
-      'refresh_token': TokenService.getRefreshToken()
+      'refresh_token': this.tokenService.getRefreshToken()
     };
 
     if (!data['refresh_token']) {
@@ -86,14 +85,14 @@ export class AuthService {
 
     return this.httpClient.post<HttpResponse<any>>(path, JSON.stringify(data))
       .map(response => {
-        TokenService.setAccessToken(response['token']);
-        TokenService.setRefreshToken(response['refresh_token']);
+        this.tokenService.setAccessToken(response['token']);
+        this.tokenService.setRefreshToken(response['refresh_token']);
         this.setAuthenticated(true);
 
         return response;
       })
       .catch(error => {
-        TokenService.removeToken();
+        this.tokenService.removeToken();
         return Observable.throw(error);
       });
   }
@@ -102,7 +101,7 @@ export class AuthService {
    * Login
    */
   public logout(): void {
-    TokenService.removeToken();
+    this.tokenService.removeToken();
     this.setAuthenticated(false);
   }
 

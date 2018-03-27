@@ -1,53 +1,61 @@
-import { Injectable } from '@angular/core';
+import { Inject, Injectable, PLATFORM_ID } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { Observable } from 'rxjs/Observable';
 
 import { environment } from '../../../environments/environment';
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
+import { isPlatformBrowser } from '@angular/common';
 
 @Injectable()
 export class LanguageService {
-  private static prefix: string  = environment.app.id;
-  private static languages: string[] = environment.languages;
-  private static defaultLanguage: string = environment.defaultLanguage;
-  private lang: BehaviorSubject<string>;
+  private static appId: string = environment.app.id;
+  private languages: string[];
+  private defaultLanguage: string;
+  private language: BehaviorSubject<string>;
 
   /**
+   * Constructor LanguageService
+   * @param platformId
+   * @param localStorage
    * @param {TranslateService} translateService
    */
-  public constructor(private translateService: TranslateService) {
-    if (this.lang === undefined) {
-      this.lang = new BehaviorSubject<string>(LanguageService.getLanguage());
+  public constructor(@Inject(PLATFORM_ID) private platformId: any,
+                     @Inject('LOCALSTORAGE') private localStorage: any,
+                     private translateService: TranslateService) {
+    this.languages = environment.languages;
+    this.defaultLanguage = environment.defaultLanguage;
+    if (this.language === undefined) {
+      this.language = new BehaviorSubject<string>(this.getLanguage());
     }
   }
 
   /**
    * @returns {string}
    */
-  public static getLanguage(): string {
-    return localStorage.getItem(LanguageService.prefix + '_lang');
+  public getLanguage(): string|null {
+    return isPlatformBrowser(this.platformId) ? this.localStorage.getItem(LanguageService.appId + '_lang') : null;
   }
 
   /**
    * @returns {string[]}
    */
-  public static getLanguages(): string[] {
-    return LanguageService.languages;
+  public getLanguages(): string[] {
+    return this.languages;
   }
 
   /**
    * @returns {string}
    */
-  public static getDefaultLanguage(): string {
-    return LanguageService.defaultLanguage;
+  public getDefaultLanguage(): string {
+    return this.defaultLanguage;
   }
 
   /**
    * @param {string} lang
    * @returns {boolean}
    */
-  public static hasLang(lang: string): boolean {
-    return LanguageService.languages.indexOf(lang) >= 0;
+  public hasLang(lang: string): boolean {
+    return this.languages.indexOf(lang) >= 0;
   }
 
   ///////////////////////
@@ -56,10 +64,13 @@ export class LanguageService {
    * Init languages
    */
   public init(): void {
-    this.translateService.addLangs(LanguageService.languages);
-    let lang = LanguageService.getLanguage() || navigator.language;
-    if (!LanguageService.hasLang(lang)) {
-      lang = LanguageService.defaultLanguage;
+    this.translateService.addLangs(this.languages);
+    let lang = environment.defaultLanguage;
+    if (isPlatformBrowser(this.platformId)) {
+      lang = this.getLanguage();
+    }
+    if (!lang || !this.hasLang(lang)) {
+      lang = this.defaultLanguage;
     }
     this.translateService.setDefaultLang(lang);
     this.setLanguage(lang);
@@ -72,7 +83,9 @@ export class LanguageService {
    * @returns {Observable<any>}
    */
   public setLanguage(lang): Observable<any> {
-    localStorage.setItem(LanguageService.prefix + '_lang', lang);
+    if (isPlatformBrowser(this.platformId)) {
+      this.localStorage.setItem(LanguageService.appId + '_lang', lang);
+    }
 
     return this.translateService.use(lang);
   }
@@ -81,6 +94,6 @@ export class LanguageService {
    * @returns {Observable<string>}
    */
   public getLang(): Observable<string> {
-    return this.lang.asObservable();
+    return this.language.asObservable();
   }
 }

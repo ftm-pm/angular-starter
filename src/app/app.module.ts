@@ -3,7 +3,6 @@ import { BrowserModule, TransferState } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { JwtModule } from '@auth0/angular-jwt';
 import { PLATFORM_ID, APP_ID, Inject } from '@angular/core';
-import { isPlatformBrowser } from '@angular/common';
 import { TransferHttpCacheModule } from '@nguniversal/common';
 import { TranslateLoader, TranslateModule, ɵa as TranslateStore } from '@ngx-translate/core';
 import { HttpClient } from '@angular/common/http';
@@ -34,7 +33,7 @@ export function exportTranslateStaticLoader(http: HttpClient, transferState: Tra
     AppComponent
   ],
   imports: [
-    BrowserModule.withServerTransition({appId: 'universal-starter'}),
+    BrowserModule.withServerTransition({appId: environment.app.id}),
     BrowserAnimationsModule,
     AppRoutingModule,
     TranslateModule.forChild({
@@ -75,8 +74,6 @@ export class AppModule {
   public constructor(@Inject(PLATFORM_ID) private platformId: Object,
                      @Inject(APP_ID) private appId: string,
                      private languageService: LanguageService) {
-    const platform = isPlatformBrowser(platformId) ? 'in the browser' : 'on the server';
-    console.log(`Running ${platform} with appId=${appId}`);
     this.languageService.init();
   }
 }

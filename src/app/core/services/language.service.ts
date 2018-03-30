@@ -1,10 +1,10 @@
 import { Inject, Injectable, PLATFORM_ID } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { Observable } from 'rxjs/Observable';
+import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 
 import { environment } from '../../../environments/environment';
-import { BehaviorSubject } from 'rxjs/BehaviorSubject';
-import { isPlatformBrowser } from '@angular/common';
+import { AppStorage } from '../storage/universal.inject';
 
 @Injectable()
 export class LanguageService {
@@ -20,7 +20,7 @@ export class LanguageService {
    * @param {TranslateService} translateService
    */
   public constructor(@Inject(PLATFORM_ID) private platformId: any,
-                     @Inject('LOCALSTORAGE') private localStorage: any,
+                     @Inject(AppStorage) private localStorage: Storage,
                      private translateService: TranslateService) {
     this.languages = environment.languages;
     this.defaultLanguage = environment.defaultLanguage;
@@ -33,7 +33,7 @@ export class LanguageService {
    * @returns {string}
    */
   public getLanguage(): string|null {
-    return isPlatformBrowser(this.platformId) ? this.localStorage.getItem(LanguageService.appId + '_lang') : null;
+    return this.localStorage.getItem(LanguageService.appId + '_lang');
   }
 
   /**
@@ -66,9 +66,7 @@ export class LanguageService {
   public init(): void {
     this.translateService.addLangs(this.languages);
     let lang = environment.defaultLanguage;
-    if (isPlatformBrowser(this.platformId)) {
-      lang = this.getLanguage();
-    }
+    lang = this.getLanguage();
     if (!lang || !this.hasLang(lang)) {
       lang = this.defaultLanguage;
     }
@@ -83,9 +81,7 @@ export class LanguageService {
    * @returns {Observable<any>}
    */
   public setLanguage(lang): Observable<any> {
-    if (isPlatformBrowser(this.platformId)) {
-      this.localStorage.setItem(LanguageService.appId + '_lang', lang);
-    }
+    this.localStorage.setItem(LanguageService.appId + '_lang', lang);
 
     return this.translateService.use(lang);
   }

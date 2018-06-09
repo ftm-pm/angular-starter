@@ -1,12 +1,12 @@
-import { ModuleWithProviders, NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { ModuleWithProviders, NgModule } from '@angular/core';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import {
   MatButtonModule,
+  MatFormFieldModule,
   MatIconModule,
-  MatInputModule,
-  MatFormFieldModule
+  MatInputModule
 } from '@angular/material';
-import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { TranslateModule } from '@ngx-translate/core';
 
 import { ImageWidgetComponent } from './components/image-widget/image-widget.component';

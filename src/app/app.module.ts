@@ -1,31 +1,39 @@
+import { HttpClientModule } from '@angular/common/http';
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { HttpClientModule } from '@angular/common/http';
-import { PrebootModule } from 'preboot';
-import { CookieService } from 'ngx-cookie-service';
+import { TransferHttpCacheModule } from '@nguniversal/common';
 
 import { environment } from '../environments/environment';
-import { AppComponent } from './app.component';
 import { AppRoutingModule } from './app-routing.module';
+import { AppComponent } from './app.component';
 import { CoreModule } from './core/core.module';
+import { LanguageService } from './core/services/language.service';
 import { SharedModule } from './shared/shared.module';
 
 @NgModule({
   declarations: [
-    AppComponent
+    AppComponent,
   ],
   imports: [
     BrowserModule.withServerTransition({appId: environment.app.id}),
-    // PrebootModule.withConfig({appRoot: 'app-root'}),
     BrowserAnimationsModule,
     HttpClientModule,
     AppRoutingModule,
     CoreModule,
     SharedModule.forRoot(),
+    TransferHttpCacheModule
   ],
-  providers: [CookieService],
+  providers: [],
   bootstrap: [AppComponent]
 })
 export class AppModule {
+  /**
+   * Constructor AppModule
+   *
+   * @param {LanguageService} languageService
+   */
+  public constructor(private languageService: LanguageService) {
+    this.languageService.init();
+  }
 }

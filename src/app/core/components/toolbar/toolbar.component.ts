@@ -14,5 +14,4 @@ export class ToolbarComponent implements OnInit {
    */
   public ngOnInit() {
   }
-
 }

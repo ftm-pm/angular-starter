@@ -1,8 +1,6 @@
-import { HttpClient, HttpErrorResponse, HttpEvent, HttpHeaders, HttpParams, HttpResponse } from '@angular/common/http';
-import { Observable } from 'rxjs/Observable';
-import 'rxjs/add/operator/catch';
-import 'rxjs/add/operator/map';
-import 'rxjs/add/observable/throw';
+import { HttpClient, HttpHeaders, HttpParams, HttpResponse } from '@angular/common/http';
+import { Observable, of } from 'rxjs';
+import { catchError, map } from 'rxjs/internal/operators';
 
 import { RestEntity } from '../entities/rest-entity';
 
@@ -28,7 +26,7 @@ export abstract class RestService<T extends RestEntity> {
   /**
    * @param {string} url
    */
-  constructor(url ?: string) {
+  public constructor(url ?: string) {
     this.url = url;
     this.headers = new HttpHeaders();
   }
@@ -75,23 +73,33 @@ export abstract class RestService<T extends RestEntity> {
     const options = {headers: this.headers, params: params};
 
     return this.httpClient.get<HttpResponse<T[]>>(url, options)
-      .map((data: HttpResponse<T[]>) => this.extractData(data))
-      .catch(this.handleError);
+      .pipe(
+        map((data: HttpResponse<T[]>) => this.extractData(data)),
+        catchError(this.handleError())
+      );
   }
 
   /**
    * @template T
    * @param {number} id
+   * @param search
    * @returns {Observable<T>}
    */
-  public getOne(id: number): Observable<T> {
+  public getOne(id: number, search: any = {}): Observable<T> {
     const url = `${this.url}/${id}`;
-    const params = new HttpParams();
+    let params = new HttpParams();
+    for (const propKey in search) {
+      if (search.hasOwnProperty(propKey) && search[propKey]) {
+        params = params.append(propKey, search[propKey].toString());
+      }
+    }
     const options = {headers: this.headers, params: params};
 
     return this.httpClient.get<HttpResponse<T>>(url, options)
-      .map((data: HttpResponse<T>) => this.extractData(data))
-      .catch(this.handleError);
+      .pipe(
+        map((data: HttpResponse<T>) => this.extractData(data)),
+        catchError(this.handleError())
+      );
   }
 
   /**
@@ -106,8 +114,10 @@ export abstract class RestService<T extends RestEntity> {
     const params = new HttpParams();
     const options = {headers: this.headers, params: params};
 
-    return this.httpClient.get<HttpResponse<T>>(url, options)
-      .catch(this.handleError);
+    return this.httpClient.get<T>(url, options)
+      .pipe(
+        catchError(this.handleError())
+      );
   }
 
   /**
@@ -120,8 +130,10 @@ export abstract class RestService<T extends RestEntity> {
     const options = {headers: this.headers};
 
     return this.httpClient.post<HttpResponse<T>>(this.url, JSON.stringify(transformedEntity), options)
-      .map(data => this.extractData(data))
-      .catch(this.handleError);
+      .pipe(
+        map(data => this.extractData(data)),
+        catchError(this.handleError())
+      );
   }
 
   /**
@@ -135,45 +147,65 @@ export abstract class RestService<T extends RestEntity> {
     });
     const options = {headers: headers};
 
-    return this.httpClient.post(this.url, formData, options)
-      .catch(this.handleError);
+    return this.httpClient.post<T>(this.url, formData, options)
+      .pipe(
+        catchError(this.handleError())
+      );
   }
 
   /**
    * @template T extends RestEntity
    * @param {T} entity
-   * @returns {Observable<void>}
+   * @returns {Observable<any>}
    */
-  public patch(entity: T): Observable<void> {
+  public patch(entity: T): Observable<any> {
     const url = `${this.url}/${entity.id}`;
     const transformedEntity: any = this.reverseTransform(entity);
     const options = {headers: this.headers};
 
-    return this.httpClient.patch(url, JSON.stringify(transformedEntity), options)
-      .catch(this.handleError);
+    return this.httpClient.patch<T>(url, JSON.stringify(transformedEntity), options)
+      .pipe(
+        catchError(this.handleError())
+      );
+  }
+
+  /**
+   * @template T extends RestEntity
+   * @param {T} entity
+   * @returns {Observable<any>}
+   */
+  public put(entity: T): Observable<any> {
+    const url = `${this.url}/${entity.id}`;
+    const transformedEntity: any = this.reverseTransform(entity);
+    const options = {headers: this.headers};
+
+    return this.httpClient.put<T>(url, JSON.stringify(transformedEntity), options).pipe(
+      catchError(this.handleError())
+    );
   }
 
   /**
    * @param {number} id
-   * @returns {Observable<ArrayBuffer>}
+   * @returns {Observable<any>}
    */
-  public delete(id: number): Observable<ArrayBuffer> {
+  public delete(id: number): Observable<any> {
     const url = `${this.url}/${id}`;
     const options = {headers: this.headers};
 
-    return this.httpClient.delete(url, options)
-      .catch(this.handleError);
+    return this.httpClient.delete<T>(url, options).pipe(
+      catchError(this.handleError())
+    );
   }
 
   /**
-   * @param {HttpResponse<T[] | T> | HttpEvent<HttpResponse<T[] | T>> | any} responseData
+   * @param any responseData
    * @returns {any}
    */
-  protected extractData(responseData: HttpResponse<T[] | T> | HttpEvent<HttpResponse<T[] | T>> | any): any {
-    let data: T[] | T;
+  protected extractData(responseData: any): any {
+    let data: any;
 
-    if (Array.isArray(responseData)) {
-      data = responseData.map(entity => this.transform(entity));
+    if (responseData['@type'] === 'hydra:Collection') {
+      data = responseData['hydra:member'].map(entity => this.transform(entity));
     } else {
       data = this.transform(responseData);
     }
@@ -182,39 +214,23 @@ export abstract class RestService<T extends RestEntity> {
   }
 
   /**
-   * @param {HttpErrorResponse | any} error
-   * @returns {ErrorObservable}
+   * Handle Http operation that failed.
+   * Let the app continue.
+   * @template T extends RestEntity
+   * @param operation - name of the operation that failed
+   * @param result - optional value to return as the observable result
    */
-  protected handleError(error: HttpErrorResponse | any) {
-    let errMsg: any, body: any;
-    if (error instanceof HttpErrorResponse) {
-      body = error;
-    } else {
-      body = JSON.parse(error) || error || '';
-    }
+  protected handleError<T>(operation = 'operation', result?: T) {
+    return (error: any): Observable<T> => {
 
-    if (typeof body.error === 'string') {
-      let err = JSON.parse(body.error);
-      if (err.error) {
-        err = err.error;
-      }
-      if (err.message) {
-        errMsg = err.message;
-      } else if (err.exception) {
-        if (err.exception.length > 0) {
-          errMsg = `${err.exception[0].message}`;
-        } else {
-          errMsg = `${err.exception.message}`;
-        }
-      } else {
-        errMsg = err.toString();
-      }
-    } else if (body.message) {
-      errMsg = body.message;
-    } else {
-      errMsg = body.toString();
-    }
+      // TODO: send the error to remote logging infrastructure
+      // console.error(error); // log to console instead
 
-    return Observable.throw(errMsg);
+      // TODO: better job of transforming error for user consumption
+      console.log(`${operation} failed: ${error.message}`);
+
+      // Let the app keep running by returning an empty result.
+      return of(result as T);
+    };
   }
 }

@@ -1,10 +1,10 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { Subscription } from 'rxjs/Subscription';
+import { Router } from '@angular/router';
+import { Subscription } from 'rxjs';
 
 import { ErrorStateMatcher } from '../../matchers/error-state.matcher';
 import { AuthService } from '../../services/auth.service';
-import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-login',
@@ -12,11 +12,12 @@ import { Router } from '@angular/router';
   styleUrls: ['./login.component.scss']
 })
 export class LoginComponent implements OnInit, OnDestroy {
-  private subscription: Subscription;
   public form: FormGroup;
   public matcher: ErrorStateMatcher;
   public error: boolean;
   public submitted: boolean;
+
+  private subscription: Subscription;
 
   /**
    * Constructor LoginComponent

@@ -1,9 +1,8 @@
+import { HttpEvent, HttpHandler, HttpInterceptor, HttpRequest } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { HttpEvent, HttpInterceptor, HttpHandler, HttpRequest } from '@angular/common/http';
-import { Observable } from 'rxjs/Observable';
-import 'rxjs/add/operator/do';
+import { Observable } from 'rxjs';
 
-import { AuthService } from '../services/auth.service';
+// import { AuthService } from '../services/auth.service';
 
 @Injectable()
 export class ContentTypeInterceptor implements HttpInterceptor {

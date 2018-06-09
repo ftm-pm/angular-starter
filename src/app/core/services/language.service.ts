@@ -1,10 +1,9 @@
 import { Inject, Injectable, PLATFORM_ID } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
-import { Observable } from 'rxjs/Observable';
-import { BehaviorSubject } from 'rxjs/BehaviorSubject';
+import { BehaviorSubject, Observable } from 'rxjs';
 
 import { environment } from '../../../environments/environment';
-import { AppStorage } from '../storage/universal.inject';
+import { AppStorage } from '../storage/app-storage.inject';
 
 @Injectable()
 export class LanguageService {

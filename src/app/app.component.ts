@@ -1,10 +1,9 @@
-import { Component, Inject, OnDestroy, OnInit, PLATFORM_ID } from '@angular/core';
-import { Subscription } from 'rxjs/Subscription';
-
-import { AuthService } from './core/services/auth.service';
-import { TokenService } from './core/services/token.service';
-import { environment } from '../environments/environment';
 import { isPlatformBrowser } from '@angular/common';
+import { Component, Inject, OnDestroy, OnInit, PLATFORM_ID } from '@angular/core';
+import { Subscription } from 'rxjs';
+
+import { environment } from '../environments/environment';
+import { AuthService } from './core/services/auth.service';
 
 @Component({
   selector: 'app-root',

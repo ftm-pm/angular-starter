@@ -1,61 +1,46 @@
-# Angular UI Skeleton
+# Angular Universal Starter
 
-This project was generated with [Angular CLI][angularCLI]. The following modules were included:
+![Angular Universal](https://angular.io/assets/images/logos/concept-icons/universal.png)
 
-* JWT [@auth0/angular-jwt][angularJwt]
-* Design [@angular/material][angularMaterial]
-* Localization [@ngx-translate/core][ngxTranslateCore]
-* Server side rendering [@nguniversal/common][nguniversal]
-* Integration with [SymfonyAPI][symfonyAPI]
+A minimal Angular starter for Universal JavaScript using the [Angular CLI](https://github.com/angular/angular-cli)
+If you're looking for the Angular Universal repo go to [**angular/universal**](https://github.com/angular/universal)  
 
-Russian documentation [here][ruDoc].
+## Getting Started
 
-## Setup
+This demo is built following the [Angular-CLI Wiki guide](https://github.com/angular/angular-cli/wiki/stories-universal-rendering)
 
-Download project and run:
-```bash
-# npm
-yarn install
-```
+We're utilizing packages from the [Angular Universal @nguniversal](https://github.com/angular/universal) repo, such as [ng-module-map-ngfactory-loader](https://github.com/angular/universal/modules/module-map-ngfactory-loader) to enable Lazy Loading.
 
-After that, install the [SymfonyAPI][symfonyAPI] project to work correctly.
+---
 
-## Use
+### Build Time Prerendering Vs. Server Side Rendering(ssr)
+This repo demonstrates the use of 2 different forms of Server Side Rendering.
 
-You can see [Angular CLI][angularCLI] documentation.
+**Prerender** 
+* Happens at build time
+* Renders your application and replaces the dist index.html with a version rendered at the route `/`.
 
-Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The app will automatically reload if you change any of the source files.
+**Server-Side Rendering(ssr)**
+* Happens at runtime
+* Uses `ngExpressEngine` to render your application on the fly at the requested url.
 
-### SSR
+---
 
-Documentation for angular universal you find [here][nguniversalDoc] or you can see [starter][universalStarter] application.
+### Installation
+* `npm install` or `yarn`
 
-For build ssr application, run:
-```bash
-npm run build:ssr
-```
+### Development (Client-side only rendering)
+* run `npm run start` which will start `ng serve`
 
-For start server ssr, run:
-```bash
-npm run serve:ssr
-```
+### Production (also for testing SSR/Pre-rendering locally)
+**`npm run build:ssr && npm run serve:ssr`** - Compiles your application and spins up a Node Express to serve your Universal application on `http://localhost:4000`.
 
-## Feedback
- 
-* Create a new issue
-* Ask a question on [сайте](https://ftm.pm).
-* Send a message to fafnur@yandex.ru
+**`npm run build:prerender && npm run serve:prerender`** - Compiles your application and prerenders your applications files, spinning up a demo http-server so you can view it on `http://localhost:8080`
+**Note**: To deploy your static site to a static hosting platform you will have to deploy the `dist/browser` folder, rather than the usual `dist`
 
-License [MIT][license].
 
-[angularCLI]: https://github.com/angular/angular-cli
-[angularJwt]: https://github.com/auth0/angular2-jwt
-[angularMaterial]: https://github.com/angular/material2
-[ngxTranslateCore]: https://github.com/ngx-translate/core
-[nguniversal]: https://github.com/angular/universal
-[nguniversalDoc]: https://angular.io/guide/universal
-[express]: https://github.com/expressjs/express
-[symfonyAPI]: https://github.com/ftm-pm/symfony-api
-[universalStarter]: https://github.com/angular/universal-starter
-[ruDoc]: https://github.com/ftm-pm/angular-ui-skeleton/blob/master/docs/ru/readme.md
-[license]: https://github.com/ftm-pm/angular-ui-skeleton/blob/master/LICENSE.txt
+## Universal "Gotchas"
+Moved to [/angular/universal/docs/gotchas.md](https://github.com/angular/universal/blob/master/readme-logo/docs/gotchas.md)
+
+# License
+[![MIT License](https://img.shields.io/badge/license-MIT-blue.svg?style=flat)](/LICENSE)

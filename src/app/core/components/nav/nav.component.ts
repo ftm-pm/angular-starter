@@ -1,11 +1,11 @@
 import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
-
-import { menu, MenuItem } from './menu';
-import { AuthService } from '../../services/auth.service';
-import { Subscription } from 'rxjs/Subscription';
-import { LanguageService } from '../../services/language.service';
-import { TranslateService } from '@ngx-translate/core';
 import { MatMenuTrigger } from '@angular/material';
+// import { TranslateService } from '@ngx-translate/core';
+import { Subscription } from 'rxjs';
+
+import { AuthService } from '../../services/auth.service';
+import { LanguageService } from '../../services/language.service';
+import { menu, MenuItem } from './menu';
 
 @Component({
   selector: 'app-nav',
@@ -15,10 +15,10 @@ import { MatMenuTrigger } from '@angular/material';
 export class NavComponent implements OnInit, OnDestroy {
   public menu: MenuItem[];
   public logged: boolean;
-  private subscription: Subscription;
   public language: string;
   public languages: string[];
   @ViewChild(MatMenuTrigger) public trigger: MatMenuTrigger;
+  private subscription: Subscription;
 
   /**
    * Constructor NavComponent

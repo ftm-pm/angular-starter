@@ -2,7 +2,7 @@ import { Inject, Injectable } from '@angular/core';
 import { REQUEST } from '@nguniversal/express-engine/tokens';
 
 @Injectable()
-export class UniversalStorage implements Storage {
+export class ServerStorage implements Storage {
   [index: number]: string;
   [key: string]: any;
   public length: number;
@@ -11,9 +11,9 @@ export class UniversalStorage implements Storage {
   constructor(@Inject(REQUEST) private request: any) {
     if (request === null) {
       this.cookies = [];
-      return;
+    } else {
+      this.cookies = request.cookies || [];
     }
-    this.cookies = request.cookies;
   }
 
   public clear(): void {

@@ -1,10 +1,11 @@
-import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { Injectable } from '@angular/core';
+import { Observable } from 'rxjs';
+import { catchError } from 'rxjs/internal/operators';
 
 import { environment } from '../../../environments/environment';
-import { RestService } from './rest.service';
 import { Image } from '../entities/image';
-import { Observable } from 'rxjs/Observable';
+import { RestService } from './rest.service';
 
 @Injectable()
 export class ImageService extends RestService<Image> {
@@ -18,7 +19,7 @@ export class ImageService extends RestService<Image> {
   /**
    * @template T
    * @param {FormData} formData
-   * @returns {Observable<T>}
+   * @returns {Observable<any>}
    */
   public postData(formData: FormData): Observable<any> {
     const headers = new HttpHeaders({
@@ -27,6 +28,6 @@ export class ImageService extends RestService<Image> {
     const options = {headers: headers};
 
     return this.httpClient.post(this.url, formData, options)
-      .catch(this.handleError);
+      .pipe(catchError(this.handleError()));
   }
 }

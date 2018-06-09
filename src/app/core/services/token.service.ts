@@ -1,7 +1,7 @@
 import { Inject, Injectable, PLATFORM_ID } from '@angular/core';
 
 import { environment } from '../../../environments/environment';
-import { AppStorage } from '../storage/universal.inject';
+import { AppStorage } from '../storage/app-storage.inject';
 
 @Injectable()
 export class TokenService {

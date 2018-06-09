@@ -1,7 +1,7 @@
-import { NgModule,  Optional, SkipSelf } from '@angular/core';
-import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
+import { NgModule,  Optional, SkipSelf } from '@angular/core';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import {
   MatButtonModule,
   MatCardModule,
@@ -14,18 +14,27 @@ import {
 } from '@angular/material';
 import { TranslateModule } from '@ngx-translate/core';
 
-import { throwIfAlreadyLoaded } from './guard/module-import-guard';
-import { ContentTypeInterceptor } from './interceptor/content-type.interceptor';
-import { JwtInterceptor } from './interceptor/jwt.interceptor';
-import { CoreRoutingModule } from './core-routing.module';
-import { AuthService } from './services/auth.service';
-import { LanguageService } from './services/language.service';
-import { ImageService } from './services/image.service';
-import { TokenService } from './services/token.service';
-import { NavComponent } from './components/nav/nav.component';
-import { ToolbarComponent } from './components/toolbar/toolbar.component';
 import { LoginComponent } from './components/login/login.component';
 import { LogoutComponent } from './components/logout/logout.component';
+import { NavComponent } from './components/nav/nav.component';
+import { ToolbarComponent } from './components/toolbar/toolbar.component';
+import { CoreRoutingModule } from './core-routing.module';
+import { ContentTypeInterceptor } from './interceptor/content-type.interceptor';
+import { JwtInterceptor } from './interceptor/jwt.interceptor';
+import { AuthService } from './services/auth.service';
+import { ImageService } from './services/image.service';
+import { LanguageService } from './services/language.service';
+import { TokenService } from './services/token.service';
+
+/**
+ * @param parentModule
+ * @param {string} moduleName
+ */
+export function throwIfAlreadyLoaded(parentModule: any, moduleName: string): void {
+  if (parentModule) {
+    throw new Error(`${moduleName} has already been loaded. Import Core modules in the AppModule only.`);
+  }
+}
 
 const CORE_COMPONENTS = [
   NavComponent,

@@ -1,9 +1,9 @@
-import { Component, ElementRef, HostBinding, HostListener, Input, OnDestroy, OnInit, Renderer2 } from '@angular/core';
-import { MatFormFieldControl } from '@angular/material';
-import { ControlValueAccessor, NgControl } from '@angular/forms';
-import { Subject } from 'rxjs/Subject';
-import { coerceBooleanProperty } from '@angular/cdk/coercion';
 import { FocusMonitor } from '@angular/cdk/a11y';
+import { coerceBooleanProperty } from '@angular/cdk/coercion';
+import { Component, ElementRef, HostBinding, HostListener, Input, OnDestroy, OnInit, Renderer2 } from '@angular/core';
+import { ControlValueAccessor, NgControl } from '@angular/forms';
+import { MatFormFieldControl } from '@angular/material';
+import { Subject } from 'rxjs';
 
 import { FileInput } from './file-input';
 
@@ -16,19 +16,19 @@ import { FileInput } from './file-input';
   ]
 })
 export class InputFileComponent implements MatFormFieldControl<FileInput>, ControlValueAccessor, OnInit, OnDestroy {
-  private static nextId: number = 0;
   public stateChanges: Subject<void> = new Subject<void>();
   public focused: boolean = false;
+  public readonly autofilled: boolean  = false;
+  public readonly shouldLabelFloat: boolean = false;
   public controlType: string = 'file-input';
-
-  private _placeholder: string;
-  private _required: boolean = false;
-
   @Input() public valuePlaceholder: string;
   @Input() public multiple: boolean;
-
   @HostBinding() public id: string = `app-input-file-${InputFileComponent.nextId++}`;
   @HostBinding('attr.aria-describedby') public describedBy: string = '';
+
+  private static nextId: number = 0;
+  private _placeholder: string;
+  private _required: boolean = false;
 
   /**
    * @see https://angular.io/api/forms/ControlValueAccessor
@@ -37,7 +37,7 @@ export class InputFileComponent implements MatFormFieldControl<FileInput>, Contr
               private focusMonitor: FocusMonitor, private _elementRef: ElementRef, private _renderer: Renderer2) {
 
     ngControl.valueAccessor = this;
-    focusMonitor.monitor(_elementRef.nativeElement, _renderer, true).subscribe(origin => {
+    focusMonitor.monitor(_elementRef.nativeElement, true).subscribe(origin => {
       this.focused = !!origin;
       this.stateChanges.next();
     });
@@ -121,9 +121,6 @@ export class InputFileComponent implements MatFormFieldControl<FileInput>, Contr
     }
   }
 
-  private _onChange = (_: any) => {};
-  private _onTouched = () => {};
-
   public writeValue(obj: any): void {
     this._renderer.setProperty(this._elementRef.nativeElement, 'value', obj);
   }
@@ -134,6 +131,15 @@ export class InputFileComponent implements MatFormFieldControl<FileInput>, Contr
 
   public registerOnTouched(fn: any): void {
     this._onTouched = fn;
+  }
+  public setDisabledState?(isDisabled: boolean): void {
+    this._renderer.setProperty(this._elementRef.nativeElement, 'disabled', isDisabled);
+  }
+
+  public open(): void {
+    if (!this.disabled) {
+      this._elementRef.nativeElement.querySelector('input').click();
+    }
   }
 
   @HostListener('change', ['$event']) public change(event) {
@@ -153,18 +159,10 @@ export class InputFileComponent implements MatFormFieldControl<FileInput>, Contr
     this._onTouched();
   }
 
-  public setDisabledState?(isDisabled: boolean): void {
-    this._renderer.setProperty(this._elementRef.nativeElement, 'disabled', isDisabled);
-  }
-
-  public open(): void {
-    if (!this.disabled) {
-      this._elementRef.nativeElement.querySelector('input').click();
-    }
-  }
+  private _onChange = (_: any) => {};
+  private _onTouched = () => {};
 
   get fileNames() {
     return this.value ? this.value.fileNames : this.valuePlaceholder;
   }
-
 }

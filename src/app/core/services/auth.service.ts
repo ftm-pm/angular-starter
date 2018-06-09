@@ -1,25 +1,20 @@
-import { forwardRef, Inject, Injectable } from '@angular/core';
-import { HttpClient, HttpErrorResponse, HttpResponse } from '@angular/common/http';
+import { HttpClient, HttpResponse } from '@angular/common/http';
+import { Injectable } from '@angular/core';
 import { JwtHelperService } from '@auth0/angular-jwt';
-import { Observable } from 'rxjs/Observable';
-import { BehaviorSubject } from 'rxjs/BehaviorSubject';
-import 'rxjs/add/operator/catch';
-import 'rxjs/add/operator/map';
-import 'rxjs/add/observable/throw';
-import 'rxjs/add/observable/of';
+import { BehaviorSubject, Observable, of, throwError } from 'rxjs';
+import { catchError, map } from 'rxjs/internal/operators';
 
-import { TokenService } from './token.service';
 import { environment } from '../../../environments/environment';
+import { TokenService } from './token.service';
 
 @Injectable()
 export class AuthService {
-  private auth: BehaviorSubject<boolean>;
+  public auth: BehaviorSubject<boolean>;
 
   /**
-   * Constructor AuthService
-   *
    * @param {HttpClient} httpClient
    * @param {JwtHelperService} jwtHelperService
+   * @param {TokenService} tokenService
    */
   public constructor(private httpClient: HttpClient, private jwtHelperService: JwtHelperService, private tokenService: TokenService ) {
     if (this.auth === undefined) {
@@ -60,14 +55,16 @@ export class AuthService {
     const path: string = `${environment.api.path}/api/token/get`;
 
     return this.httpClient.post<HttpResponse<any>>(path, JSON.stringify(data))
-      .map(response => {
-        this.tokenService.setAccessToken(response['token']);
-        this.tokenService.setRefreshToken(response['refresh_token']);
-        this.setAuthenticated(true);
+      .pipe(
+        map(response => {
+          this.tokenService.setAccessToken(response['token']);
+          this.tokenService.setRefreshToken(response['refresh_token']);
+          this.setAuthenticated(true);
 
-        return response;
-      })
-      .catch(this.handleError);
+          return response;
+        }),
+        catchError(this.handleError())
+      );
   }
 
   /**
@@ -80,21 +77,23 @@ export class AuthService {
     };
 
     if (!data['refresh_token']) {
-      return Observable.of(null);
+      return of(null);
     }
 
     return this.httpClient.post<HttpResponse<any>>(path, JSON.stringify(data))
-      .map(response => {
-        this.tokenService.setAccessToken(response['token']);
-        this.tokenService.setRefreshToken(response['refresh_token']);
-        this.setAuthenticated(true);
+      .pipe(
+        map(response => {
+          this.tokenService.setAccessToken(response['token']);
+          this.tokenService.setRefreshToken(response['refresh_token']);
+          this.setAuthenticated(true);
 
-        return response;
-      })
-      .catch(error => {
-        this.tokenService.removeToken();
-        return Observable.throw(error);
-      });
+          return response;
+        }),
+        catchError(error => {
+          this.tokenService.removeToken();
+          return throwError(error);
+        })
+      );
   }
 
   /**
@@ -106,39 +105,22 @@ export class AuthService {
   }
 
   /**
-   * @param {HttpErrorResponse | any} error
-   * @returns {ErrorObservable}
+   * Handle Http operation that failed.
+   * Let the app continue.
+   * @param operation - name of the operation that failed
+   * @param result - optional value to return as the observable result
    */
-  private handleError(error: HttpErrorResponse | any) {
-    let errMsg: any, body: any;
-    if (error instanceof HttpErrorResponse) {
-      body = error;
-    } else {
-      body = JSON.parse(error) || error || '';
-    }
+  private handleError<T>(operation = 'operation', result?: T) {
+    return (error: any): Observable<T> => {
 
-    if (typeof body.error === 'string') {
-      let err = JSON.parse(body.error);
-      if (err.error) {
-        err = err.error;
-      }
-      if (err.message) {
-        errMsg = err.message;
-      } else if (err.exception) {
-        if (err.exception.length > 0) {
-          errMsg = `${err.exception[0].message}`;
-        } else {
-          errMsg = `${err.exception.message}`;
-        }
-      } else {
-        errMsg = err.toString();
-      }
-    } else if (body.message) {
-      errMsg = body.message;
-    } else {
-      errMsg = body.toString();
-    }
+      // TODO: send the error to remote logging infrastructure
+      // console.error(error); // log to console instead
 
-    return Observable.throw(errMsg);
+      // TODO: better job of transforming error for user consumption
+      console.log(`${operation} failed: ${error.message}`);
+
+      // Let the app keep running by returning an empty result.
+      return of(result as T);
+    };
   }
 }

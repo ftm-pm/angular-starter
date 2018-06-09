@@ -1,14 +1,9 @@
 import { Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
-import { Subscription } from 'rxjs/Subscription';
-import { Subject } from 'rxjs/Subject';
-import { Observable } from 'rxjs/Observable';
-import 'rxjs/operator/switchMap';
-import 'rxjs/add/observable/combineLatest';
+import { combineLatest, Observable, Subject, Subscription } from 'rxjs';
 
 import { ImageService } from '../../../core/services/image.service';
 import { FileInput } from '../input-file/file-input';
-import { Image } from '../../../core/entities/image';
 
 export interface ImageWidgetOptions {
   showPreview ?: boolean;
@@ -27,7 +22,6 @@ export interface ImageWidgetOptions {
   styleUrls: ['./image-widget.component.scss']
 })
 export class ImageWidgetComponent implements OnInit, OnDestroy {
-  private subscription: Subscription;
   @Input() public options: ImageWidgetOptions = <ImageWidgetOptions>{
     disabled: false,
     required: false,
@@ -42,6 +36,7 @@ export class ImageWidgetComponent implements OnInit, OnDestroy {
   public submitted: boolean;
   public form: FormGroup;
   public files: Subject<File[]>;
+  private subscription: Subscription;
 
   /**
    * @param {ImageService} imageService
@@ -90,13 +85,13 @@ export class ImageWidgetComponent implements OnInit, OnDestroy {
    * @param {File[]} files
    */
   private send(files: File[]): void {
-    const observables: Observable<Image>[] = files.map((file: File) => {
+    const observables: Observable<any>[] = files.map((file: File) => {
       const formData: FormData = new FormData();
       formData.append('imageFile', file, file.name);
       return this.imageService.postData(formData);
     });
     this.submitted = true;
-    this.subscription.add(Observable.combineLatest(observables)
+    this.subscription.add(combineLatest(observables)
       .subscribe( (response: any[]) => {
         this.submitted = false;
         if (response && this.formControl) {
@@ -104,7 +99,7 @@ export class ImageWidgetComponent implements OnInit, OnDestroy {
         } else {
           console.error('response or formControl is null');
         }
-      }, error => {
+      }, () => {
         this.submitted = false;
       })
     );

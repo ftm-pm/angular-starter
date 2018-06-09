@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { CookieService } from 'ngx-cookie-service';
 
 @Injectable()
-export class CookieStorage implements Storage {
+export class BrowserStorage implements Storage {
   [index: number]: string;
   [key: string]: any;
   public length: number;

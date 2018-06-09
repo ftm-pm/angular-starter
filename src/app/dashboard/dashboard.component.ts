@@ -1,7 +1,7 @@
-import { Component, OnDestroy, OnInit, Inject } from '@angular/core';
+import { Component, Inject, OnDestroy, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 
-import { FileValidators } from '../shared/validators/file-validators';
+// import { FileValidators } from '../shared/validators/file-validators';
 import { ImageWidgetOptions } from '../shared/components/image-widget/image-widget.component';
 
 @Component({

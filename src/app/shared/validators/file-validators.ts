@@ -1,9 +1,8 @@
-import { ValidatorFn, AbstractControl } from '@angular/forms';
+import { AbstractControl, ValidatorFn } from '@angular/forms';
 
 import { FileInput } from '../components/input-file/file-input';
 
 export class FileValidators {
-
   /**
    * Function to control content of files
    *

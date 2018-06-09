@@ -1,17 +1,16 @@
 import { NgModule } from '@angular/core';
+import { TransferState } from '@angular/platform-browser';
 import { ServerModule, ServerTransferStateModule } from '@angular/platform-server';
+import { JwtModule } from '@auth0/angular-jwt';
 import { ModuleMapLoaderModule } from '@nguniversal/module-map-ngfactory-loader';
 import { TranslateLoader, TranslateModule } from '@ngx-translate/core';
-import { TransferState } from '@angular/platform-browser';
-import { JwtModule } from '@auth0/angular-jwt';
 
 import { environment } from '../environments/environment';
-import { AppModule } from './app.module';
 import { AppComponent } from './app.component';
+import { AppModule } from './app.module';
+import { AppStorage } from './core/storage/app-storage.inject';
+import { ServerStorage } from './core/storage/storage.service';
 import { TranslateServerLoader } from './core/utils/translate-server-loader.service';
-import { LanguageService } from './core/services/language.service';
-import { AppStorage } from './core/storage/universal.inject';
-import { UniversalStorage } from './core/storage/server.storage';
 
 export function getServerJwtToken() {
   return null;
@@ -23,6 +22,8 @@ export function translateFactory(transferState: TransferState) {
 
 @NgModule({
   imports: [
+    // The AppServerModule should import your AppModule followed
+    // by the ServerModule from @angular/platform-server.
     AppModule,
     ServerModule,
     ModuleMapLoaderModule,
@@ -41,21 +42,15 @@ export function translateFactory(transferState: TransferState) {
       }
     }),
   ],
-  bootstrap: [AppComponent],
   providers: [
     {
       provide: AppStorage,
-      useClass: UniversalStorage
-    },
-  ]
+      useClass: ServerStorage
+    }
+  ],
+  // Since the bootstrapped component is not inherited from your
+  // imported AppModule, it needs to be repeated here.
+  bootstrap: [AppComponent]
 })
 export class AppServerModule {
-  /**
-   * Constructor AppModule
-   *
-   * @param {LanguageService} languageService
-   */
-  public constructor(private languageService: LanguageService) {
-    this.languageService.init();
-  }
 }

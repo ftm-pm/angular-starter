@@ -29,6 +29,13 @@ export class TokenService {
   }
 
   /**
+   * Get refresh token
+   */
+  public getUserId(): number {
+    return +this.localStorage.getItem(`${TokenService.appId}_user_id`);
+  }
+
+  /**
    * Set access token
    */
   public setAccessToken(token: string): void {
@@ -45,8 +52,16 @@ export class TokenService {
   /**
    * Set refresh token
    */
+  public setUserId(id: number|string): void {
+    this.localStorage.setItem(`${TokenService.appId}_user_id`, id.toString());
+  }
+
+  /**
+   * Set refresh token
+   */
   public removeToken(): void {
     this.localStorage.removeItem(`${TokenService.appId}_access_token`);
     this.localStorage.removeItem(`${TokenService.appId}_refresh_token`);
+    this.localStorage.removeItem(`${TokenService.appId}_user_id`);
   }
 }

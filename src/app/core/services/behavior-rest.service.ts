@@ -3,15 +3,15 @@ import { sha3_256 } from 'js-sha3';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { catchError, map } from 'rxjs/internal/operators';
 
-import { RestEntity } from '../entities/rest-entity';
+import { RestEntity } from '../models/rest-entity';
 import { RestService } from './rest.service';
 
 export interface BehaviorRestOptions {
-  lazyLoad ?: boolean;
+  lazyLoad?: boolean;
   reload: boolean;
-  showSpinner ?: boolean;
-  subload ?: any;
-  noreload ?: boolean;
+  showSpinner?: boolean;
+  subload?: any;
+  noreload?: boolean;
 }
 
 export interface BehaviorRestItem<T> {
@@ -47,6 +47,11 @@ export abstract class BehaviorRestService<T extends RestEntity> extends RestServ
     return sha3_256(JSON.stringify(key));
   }
 
+  public clear(): void {
+    this.collections = [];
+    this.entities = [];
+  }
+
   /**
    * @param search
    * @param {BehaviorRestOptions} options
@@ -77,16 +82,14 @@ export abstract class BehaviorRestService<T extends RestEntity> extends RestServ
   }
 
   /**
-   * Add new entity
-   *
-   * @template T
    * @param {T} entity
+   * @param search
    * @param {BehaviorRestOptions} behaviorOptions
    * @returns {Observable<T extends RestEntity>}
    */
-  public postEntity(entity: T, behaviorOptions: BehaviorRestOptions = <BehaviorRestOptions>{}): Observable<T> {
+  public postEntity(entity: T, search: any = {}, behaviorOptions: BehaviorRestOptions = <BehaviorRestOptions>{}): Observable<T> {
     const transformedEntity: any = this.reverseTransform(entity);
-    const options = { headers: this.headers };
+    const options = {headers: this.headers, params: this.getParams(search)};
 
     return this.httpClient.post<T>(this.url, JSON.stringify(transformedEntity), options)
       .pipe(
@@ -94,7 +97,7 @@ export abstract class BehaviorRestService<T extends RestEntity> extends RestServ
           const transformEntity: T = this.extractData(data);
           if (!behaviorOptions.noreload) {
             this.setEntity(transformEntity);
-            if (this.autoreload && !behaviorOptions.noreload) {
+            if (this.autoreload) {
               this.updateCollectionsAfterPost(transformEntity.id);
             } else {
               this.collections = [];
@@ -102,33 +105,37 @@ export abstract class BehaviorRestService<T extends RestEntity> extends RestServ
           }
 
           return transformEntity;
-        }),
-       catchError(this.handleError())
+        })
       );
   }
 
 
   /**
    * @param {T} entity
+   * @param search
    * @param {BehaviorRestOptions} behaviorOptions
    * @returns {Observable<any>}
    */
-  public patchEntity(entity: T, behaviorOptions: BehaviorRestOptions = <BehaviorRestOptions>{}): Observable<any> {
+  public patchEntity(entity: T, search: any = {}, behaviorOptions: BehaviorRestOptions = <BehaviorRestOptions>{}): Observable<any> {
     const url = `${this.url}/${entity.id}`;
     const transformedEntity: any = this.reverseTransform(entity);
-    const options = { headers: this.headers };
+    const options = {headers: this.headers, params: this.getParams(search)};
 
     return this.httpClient.patch<T>(url, JSON.stringify(transformedEntity), options)
       .pipe(
         map(data => {
           const transformEntity: T = this.extractData(data);
           if (!behaviorOptions.noreload) {
-            this.getOne(entity.id).subscribe(response => {
-              this.setEntity(response);
-              if (this.autoreload) {
-                this.updateCollectionsAfterPatch(response.id);
-              }
-            });
+            this.setEntity(transformEntity);
+            if (this.autoreload) {
+              this.updateCollectionsAfterPut(transformEntity.id);
+            }
+            // this.getOne(entity.id).subscribe(response => {
+            //   this.setEntity(response);
+            //   if (this.autoreload) {
+            //     this.updateCollectionsAfterPatch(response.id);
+            //   }
+            // });
           } else {
             this.collections = [];
           }
@@ -141,25 +148,30 @@ export abstract class BehaviorRestService<T extends RestEntity> extends RestServ
 
   /**
    * @param {T} entity
+   * @param search
    * @param {BehaviorRestOptions} behaviorOptions
    * @returns {Observable<any>}
    */
-  public putEntity(entity: T, behaviorOptions: BehaviorRestOptions = <BehaviorRestOptions>{}): Observable<any> {
+  public putEntity(entity: T, search: any = {}, behaviorOptions: BehaviorRestOptions = <BehaviorRestOptions>{}): Observable<any> {
     const url = `${this.url}/${entity.id}`;
     const transformedEntity: any = this.reverseTransform(entity);
-    const options = { headers: this.headers };
+    const options = {headers: this.headers, params: this.getParams(search)};
 
     return this.httpClient.put(url, JSON.stringify(transformedEntity), options)
       .pipe(
         map(data => {
           const transformEntity: T = this.extractData(data);
           if (!behaviorOptions.noreload) {
-            this.getOne(entity.id).subscribe(response => {
-              this.setEntity(response);
-              if (this.autoreload && !behaviorOptions.noreload) {
-                this.updateCollectionsAfterPut(response.id);
-              }
-            });
+            this.setEntity(transformEntity);
+            if (this.autoreload) {
+              this.updateCollectionsAfterPut(transformEntity.id);
+            }
+            // this.getOne(entity.id).subscribe(response => {
+            //   this.setEntity(response);
+            //   if (this.autoreload && !behaviorOptions.noreload) {
+            //     this.updateCollectionsAfterPut(response.id);
+            //   }
+            // });
           } else {
             this.collections = [];
           }
@@ -173,12 +185,13 @@ export abstract class BehaviorRestService<T extends RestEntity> extends RestServ
 
   /**
    * @param {number} id
+   * @param search
    * @param {BehaviorRestOptions} behaviorOptions
    * @returns {Observable<any>}
    */
-  public delete(id: number, behaviorOptions: BehaviorRestOptions = <BehaviorRestOptions>{}): Observable<any> {
+  public delete(id: number, search: any = {}, behaviorOptions: BehaviorRestOptions = <BehaviorRestOptions>{}): Observable<any> {
     const url = `${this.url}/${id}`;
-    const options = { headers: this.headers };
+    const options = {headers: this.headers, params: this.getParams(search)};
 
     return this.httpClient.delete(url, options)
       .pipe(
@@ -334,7 +347,7 @@ export abstract class BehaviorRestService<T extends RestEntity> extends RestServ
         collection.next(<BehaviorRestItem<T>>{
           query: restItem.query,
           entitiesId: restItem.entitiesId.filter(entity => entity !== entityId),
-          collection: collectionItems,
+          collection: collectionItems
         });
         this.getEntity(hash).next(collectionItems);
       }

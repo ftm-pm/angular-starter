@@ -1,6 +1,9 @@
-import 'zone.js/dist/zone-node';
-import 'reflect-metadata';
 import {enableProdMode} from '@angular/core';
+import * as cookieParser from 'cookie-parser';
+// import fetch from 'node-fetch';
+import 'reflect-metadata';
+import 'zone.js/dist/zone-node';
+
 // Express Engine
 import {ngExpressEngine} from '@nguniversal/express-engine';
 // Import module map for lazy loading
@@ -14,6 +17,7 @@ enableProdMode();
 
 // Express server
 const app = express();
+app.use(cookieParser());
 
 const PORT = process.env.PORT || 4000;
 const DIST_FOLDER = join(process.cwd(), 'dist');
@@ -42,7 +46,17 @@ app.get('*.*', express.static(join(DIST_FOLDER, 'browser'), {
 
 // All regular routes use the Universal engine
 app.get('*', (req, res) => {
+  console.log('xxx');
   res.render('index', { req });
+  // CHECK AUTH
+  // fetch('http://localhost', {
+  //   method: 'GET',
+  //   headers: {'Content-Type': 'application/json'}
+  // }).then(response => {
+  //   res.send('xxx');
+  // }).catch(err => {
+  //   console.log(err);
+  // });
 });
 
 // Start up the Node server

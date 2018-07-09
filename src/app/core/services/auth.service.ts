@@ -10,16 +10,20 @@ import { TokenService } from './token.service';
 @Injectable()
 export class AuthService {
   public auth: BehaviorSubject<boolean>;
+  private readonly url: string;
 
   /**
    * @param {HttpClient} httpClient
    * @param {JwtHelperService} jwtHelperService
    * @param {TokenService} tokenService
    */
-  public constructor(private httpClient: HttpClient, private jwtHelperService: JwtHelperService, private tokenService: TokenService ) {
+  public constructor(private httpClient: HttpClient,
+                     private jwtHelperService: JwtHelperService,
+                     private tokenService: TokenService) {
     if (this.auth === undefined) {
       this.auth = new BehaviorSubject<boolean>(this.isAuthenticated());
     }
+    this.url = `${environment.api.path}/${environment.api.prefix}`;
   }
 
   /**
@@ -29,6 +33,22 @@ export class AuthService {
     const token = this.tokenService.getAccessToken();
 
     return token && !this.jwtHelperService.isTokenExpired(token);
+  }
+
+  /**
+   * @returns {boolean}
+   */
+  public isModerator(): boolean {
+    const token = this.tokenService.getAccessToken();
+
+    return token && this.jwtHelperService.decodeToken(token)['roles'].filter(role => role === 'ROLE_MODERATOR').length > 0;
+  }
+
+  /**
+   * @returns {number}
+   */
+  public uid(): number {
+    return +this.tokenService.getUserId();
   }
 
   /**
@@ -52,18 +72,49 @@ export class AuthService {
    * @returns {Observable<any>}
    */
   public login(data: any) {
-    const path: string = `${environment.api.path}/api/token/get`;
+    const path: string = `${this.url}/token/get`;
 
     return this.httpClient.post<HttpResponse<any>>(path, JSON.stringify(data))
       .pipe(
         map(response => {
           this.tokenService.setAccessToken(response['token']);
           this.tokenService.setRefreshToken(response['refresh_token']);
+          this.tokenService.setUserId(response['id']);
           this.setAuthenticated(true);
 
           return response;
         }),
-        catchError(this.handleError())
+        catchError(this.handleError)
+      );
+  }
+
+  /**
+   * Register
+   *
+   * @param data
+   * @returns {Observable<any>}
+   */
+  public register(data: any) {
+    const path: string = `${this.url}/register`;
+
+    return this.httpClient.post<HttpResponse<any>>(path, JSON.stringify(data))
+      .pipe(
+        catchError(this.handleError)
+      );
+  }
+
+  /**
+   * Confirmation
+   *
+   * @param {string} data
+   * @returns {Observable<any>}
+   */
+  public confirmation(data: string) {
+    const path: string = `${this.url}/confirmation/${data}`;
+
+    return this.httpClient.get<HttpResponse<boolean>>(path)
+      .pipe(
+        catchError(this.handleError)
       );
   }
 
@@ -71,7 +122,7 @@ export class AuthService {
    * @returns {Observable<any>}
    */
   public refresh() {
-    const path: string = `${environment.api.path}/api/token/refresh`;
+    const path: string = `${this.url}/token/refresh`;
     const data = {
       'refresh_token': this.tokenService.getRefreshToken()
     };
@@ -101,26 +152,15 @@ export class AuthService {
    */
   public logout(): void {
     this.tokenService.removeToken();
+    // this.userService.clear();
     this.setAuthenticated(false);
   }
 
   /**
-   * Handle Http operation that failed.
-   * Let the app continue.
-   * @param operation - name of the operation that failed
-   * @param result - optional value to return as the observable result
+   * @param response
+   * @returns {Observable<string>}
    */
-  private handleError<T>(operation = 'operation', result?: T) {
-    return (error: any): Observable<T> => {
-
-      // TODO: send the error to remote logging infrastructure
-      // console.error(error); // log to console instead
-
-      // TODO: better job of transforming error for user consumption
-      console.log(`${operation} failed: ${error.message}`);
-
-      // Let the app keep running by returning an empty result.
-      return of(result as T);
-    };
+  private handleError(response: any) {
+    return of(response);
   }
 }

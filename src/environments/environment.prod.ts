@@ -5,6 +5,7 @@ export const environment = {
     path: 'http://localhost:4200',
   },
   api: {
+    prefix: 'api',
     name: 'backend',
     path: 'http://symfony-api',
     jwt: true,

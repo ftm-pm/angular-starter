@@ -4,7 +4,7 @@ import { Observable } from 'rxjs';
 import { catchError } from 'rxjs/internal/operators';
 
 import { environment } from '../../../environments/environment';
-import { Image } from '../entities/image';
+import { Image } from '../models/image';
 import { RestService } from './rest.service';
 
 @Injectable()
@@ -13,7 +13,7 @@ export class ImageService extends RestService<Image> {
    * @inheritDoc
    */
   public constructor(protected httpClient: HttpClient) {
-    super(`${environment.api.path}/api/media/images`);
+    super(`${environment.api.path}/${environment.api.prefix}/media/images`);
   }
 
   /**

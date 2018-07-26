@@ -6,7 +6,6 @@
   }
 }
 
-
 input {
   width: 0;
   height: 0;
@@ -18,4 +17,11 @@ input {
 
 .filename {
   display: inline-block;
+}
+
+/deep/ .mat-form-field-label,
+/deep/ .mat-form-field-appearance-legacy .mat-form-field-label {
+  display: block;
+  top: 0;
+  font-size: 0.75rem;
 }

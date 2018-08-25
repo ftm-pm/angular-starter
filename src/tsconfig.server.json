@@ -13,6 +13,14 @@
     "test.ts",
     "**/*.spec.ts"
   ],
+//  "files": [
+//    "./app/app.server.module.ts",
+//    "./main.server.ts",
+//    "./polyfills.ts"
+//  ],
+//  "include": [
+//    "./**/*.ts"
+//  ],
   // Add "angularCompilerOptions" with the AppServerModule you wrote
   // set as the "entryModule".
   "angularCompilerOptions": {

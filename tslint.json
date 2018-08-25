@@ -18,8 +18,7 @@
     "forin": true,
     "import-blacklist": [
       true,
-      "rxjs/Rx",
-      "rxjs/operators"
+      "rxjs/Rx"
     ],
     "import-spacing": true,
     "indent": [
@@ -30,18 +29,24 @@
     "label-position": true,
     "max-line-length": [
       true,
-      160
+      140
     ],
-    "member-access": true,
+    "member-access": false,
     "member-ordering": [
       true,
       {
         "order": [
           "public-static-field",
-          "public-instance-field",
+          "public-static-method",
+          "protected-static-field",
+          "protected-static-method",
           "private-static-field",
+          "private-static-method",
+          "public-instance-field",
+          "protected-instance-field",
           "private-instance-field",
           "public-constructor",
+          "protected-constructor",
           "private-constructor",
           "public-instance-method",
           "protected-instance-method",
@@ -65,7 +70,10 @@
     "no-empty": false,
     "no-empty-interface": true,
     "no-eval": true,
-    "no-inferrable-types": false,
+    "no-inferrable-types": [
+      true,
+      "ignore-params"
+    ],
     "no-misused-new": true,
     "no-non-null-assertion": true,
     "no-shadowed-variable": true,
@@ -85,7 +93,7 @@
       "check-else",
       "check-whitespace"
     ],
-    "ordered-imports": true,
+    "ordered-imports": false,
     "prefer-const": true,
     "quotemark": [
       true,
@@ -110,7 +118,6 @@
         "variable-declaration": "nospace"
       }
     ],
-    "typeof-compare": true,
     "unified-signatures": true,
     "variable-name": false,
     "whitespace": [
@@ -120,18 +127,6 @@
       "check-operator",
       "check-separator",
       "check-type"
-    ],
-    "directive-selector": [
-      true,
-      "attribute",
-      "app",
-      "camelCase"
-    ],
-    "component-selector": [
-      true,
-      "element",
-      "app",
-      "kebab-case"
     ],
     "no-output-on-prefix": true,
     "use-input-property-decorator": true,

@@ -5,68 +5,21 @@
 @import "fonts";
 @import url('//cdnjs.cloudflare.com/ajax/libs/normalize/8.0.0/normalize.min.css');
 @import "~bootstrap/scss/bootstrap-grid";
+//@import '~perfect-scrollbar/css/perfect-scrollbar.css';
+@import "./forms";
+@import "./keyframes";
 
 @include theme();
 
 html, body {
   font-family: Roboto, 'Helvetica Neue', sans-serif;
   font-size: 16px;
-}
-
-.layout {
-  flex: 1 0;
-  display: flex;
-  flex-flow: column wrap;
   width: 100%;
-
-  &_column {
-    flex-flow: column wrap;
-  }
-  &_row {
-    flex-flow: row wrap;
-  }
+  height: 100%;
+  position: relative;
 }
 
-.layout-tab-group {
-  width: 100%;
-}
-
-.layout-column {
-  flex: 1 0;
-  display: flex;
-
-  &_w2 {
-    flex: 2 0;
-  }
-}
-
-.layout-footer {
-  display: block;
-}
-
-//////////////////////////
-
-main {
-  background-color: mat-color($mat-grey, 100);
-  flex: 1 0;
-  display: flex;
-  flex-flow: column wrap;
-
-  .fixed-main & {
-    height: 100%;
-    overflow: hidden;
-  }
-}
-
-.container {
-  display: block;
-  margin: 0 auto;
-
-  @media all and (min-width: 1200px) {
-    width: 1400px;
-  }
-}
-
-.mat-spinner {
-  margin: auto;
+*, /deep/ * {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }

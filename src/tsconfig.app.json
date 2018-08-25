@@ -8,6 +8,14 @@
       "node"
     ]
   },
+//  "files": [
+//    "./app/app.browser.module.ts",
+//    "./main.browser.ts",
+//    "./polyfills.ts"
+//  ],
+//  "include": [
+//    "./**/*.ts"
+//  ],
   "exclude": [
     "test.ts",
     "**/*.spec.ts"

@@ -1,0 +1,7 @@
+@import "../../stylesheets/utils";
+
+@include main();
+
+.mat-sidenav-container {
+  min-height: 100%;
+}

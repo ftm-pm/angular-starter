@@ -8,18 +8,50 @@
   @include angular-material-theme($app-theme);
 }
 
-@mixin page() {
-  :host {
-    width: 100%;
-    display: flex;
-    flex: 1 0;
-  }
-}
-
 @mixin main() {
   :host {
     display: flex;
     flex-flow: column nowrap;
-    min-height: 100vh;
+    height: 100%;
+    overflow: hidden;
+  }
+}
+
+
+@mixin page() {
+  :host {
+    width: 100%;
+  }
+}
+
+
+@mixin pageFlex() {
+  :host {
+    width: 100%;
+    display: flex;
+  }
+}
+
+@mixin pageAuth() {
+  :host {
+    background: url(/assets/images/theme/error-bg.jpg) no-repeat 50% 50%;
+    background-size: cover;
+    padding: 1rem;
+    min-height: 100%;
+    width: 100%;
+    display: flex;
+    position: relative;
+
+    &:before {
+      background-color: rgba(0,0,0,.65);
+      content: "";
+      display: block;
+      height: 100%;
+      width: 100%;
+      position: absolute;
+      left: 0;
+      top: 0;
+      z-index: 0;
+    }
   }
 }

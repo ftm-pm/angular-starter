@@ -4,60 +4,7 @@
     "en": "English",
     "ru": "Russian"
   },
-  "menu": {
-    "dashboard": "Dashboard",
-    "login": "Sign in",
-    "logout": "Sign out"
-  },
-  "actions": {
-    "view": "View",
-    "details": "Details",
-    "signin": "Sign in",
-    "signout": "Sign out",
-    "reset": "Reset",
-    "open": "Open",
-    "close": "Close",
-    "cancel": "Cancel",
-    "prev": "Previous",
-    "next": "Next",
-    "load": "Load",
-    "save": "Save",
-    "create": "Create",
-    "remove": "Remove",
-    "delete": "Delete",
-    "select": "Select",
-    "edit": "Edit",
-    "yes": "Yes",
-    "no": "No"
-  },
-  "sign": {
-    "username": "Login",
-    "email": "Email",
-    "password": "Password",
-    "repeatPassword": "Repeat password",
-    "reset": "Forgot password",
-    "register": "Register",
-    "in": "Sign in",
-    "out": "Sign out",
-    "error": {
-      "form": "Account not found",
-      "username": "Login is required",
-      "password": "Password is required"
-    }
-  },
   "dashboard": {
-    "title": "Dashboard",
-    "description": "Angular UI Skeleton."
-  },
-  "shared": {
-    "imageWidget": {
-      "placeholder": "Image file",
-      "valuePlaceholder": "No file selected",
-      "error": {
-        "required": "Please select a file",
-        "maxSize": "The total size must not exceed"
-      },
-      "loading": "Loading..."
-    }
+    "hello": "hello"
   }
 }

@@ -1,0 +1,88 @@
+@import "utils";
+
+.form {}
+
+.field {}
+
+.field-group {
+  &_wf {
+    width: 100%;
+  }
+  &_mb {
+    margin-bottom: 1rem;
+  }
+}
+
+
+.field-align,
+.mat-button.field-align,
+.mat-raised-button.field-align {
+  &_fw {
+    display: block;
+    width: 100%;
+  }
+
+  &_l {
+    margin-left: 0;
+    margin-right: auto;
+  }
+  &_r {
+    margin-left: auto;
+    margin-right: 0;
+  }
+  &_b {
+    margin-bottom: 0;
+    margin-top: auto;
+  }
+  &_t {
+    margin-bottom: auto;
+    margin-top: 0;
+  }
+
+  &_a {
+    margin: auto;
+  }
+
+  &_al {
+    margin: auto 0 auto auto;
+  }
+  &_ar {
+    margin: auto auto auto 0;
+  }
+  &_ab {
+    margin: auto auto 0 auto;
+  }
+  &_at {
+    margin: 0 auto auto auto;
+  }
+}
+
+.field-group {
+  &_wf {
+    width: 100%;
+  }
+  &_mb {
+    margin-bottom: 1rem;
+  }
+
+  &_df_mmd {
+    display: flex;
+    flex-flow: column wrap;
+  }
+
+  @include media-breakpoint-up(md) {
+    &_df_mmd {
+      flex-flow: row nowrap;
+    }
+  }
+}
+
+.field-label {
+  font-size: 0.7rem;
+  color: rgba(0, 0, 0, 0.54);
+  margin-bottom: 5px;
+
+  .field-group.mat-form-field-invalid & {
+    color: mat-color($mat-red, 500);
+  }
+}

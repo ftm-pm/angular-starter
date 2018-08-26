@@ -1,41 +1,42 @@
 import { HttpClient } from '@angular/common/http';
 import { NgModule } from '@angular/core';
 import { TransferState } from '@angular/platform-browser';
-import { JwtModule } from '@auth0/angular-jwt';
-import { REQUEST } from '@nguniversal/express-engine/tokens';
 import { TranslateLoader, TranslateModule } from '@ngx-translate/core';
-import { CookieService } from 'ngx-cookie-service';
+import { REQUEST } from '@nguniversal/express-engine/tokens';
+import { CookieModule } from 'ngx-cookie';
 
-import { environment } from '../environments/environment';
-import { AppComponent } from './app.component';
+import { environment } from '../environments/environment.prod';
 import { AppModule } from './app.module';
-import { AppStorage } from './core/storage/app-storage.inject';
-import { BrowserStorage } from './core/storage/browser.storage';
-import { TranslateBrowserLoader } from './core/utils/translate-browser-loader.service';
+import { AppComponent } from './core/components';
+import { AppStorage, BrowserStorage } from './core/storages';
+import { BrowserTranslateLoader } from './core/translate-loaders';
+import { getCookie } from './core/utils';
 
-
-// the Request object only lives on the server
+/**
+ * Note: The Request object only lives on the server
+ */
 export function getRequest(): any {
-  return { headers: { cookie: document.cookie } };
+  return {headers: {cookie: document.cookie}};
 }
 
-export function getCookie(name) {
-  const pattern: string = '(?:^|; )' + name.replace(/([\.$?*|{}\(\)\[\]\\\/\+^])/g, '\\$1') + '=([^;]*)';
-  const matches = document.cookie.match(new RegExp(pattern));
-  return matches ? decodeURIComponent(matches[1]) : undefined;
+/**
+ * Create translation loader for Browser
+ *
+ * @param http
+ * @param transferState
+ */
+export function exportTranslateStaticLoader(http: HttpClient, transferState: TransferState) {
+  return new BrowserTranslateLoader('/assets/i18n/', '.json', transferState, http);
 }
 
 export function getJwtToken() {
-  return getCookie(`${environment.app.id}_access_token`);
-}
-
-export function exportTranslateStaticLoader(http: HttpClient, transferState: TransferState) {
-  return new TranslateBrowserLoader('/assets/i18n/', '.json', transferState, http);
+  return getCookie(`${environment.appId}_access_token`);
 }
 
 @NgModule({
   imports: [
     AppModule,
+    CookieModule.forRoot(),
     TranslateModule.forRoot({
         loader: {
           provide: TranslateLoader,
@@ -44,21 +45,13 @@ export function exportTranslateStaticLoader(http: HttpClient, transferState: Tra
         }
       }
     ),
-    JwtModule.forRoot({
-      config: {
-        tokenGetter: getJwtToken,
-        whitelistedDomains: [environment.api.path]
-      }
-    }),
   ],
   providers: [
-    CookieService,
-    {
-      // The server provides these in main.server
-      provide: REQUEST, useFactory: (getRequest)
-    },
-    { provide: AppStorage, useClass: BrowserStorage },
+    {provide: REQUEST, useFactory: (getRequest)},
+    {provide: AppStorage, useClass: BrowserStorage},
   ],
+  // Since the bootstrapped component is not inherited from your
+  // imported AppModule, it needs to be repeated here.
   bootstrap: [AppComponent]
 })
 export class AppBrowserModule {
